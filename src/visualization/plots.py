@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import r2_score
+from sklearn.metrics import confusion_matrix
 
 class ModelVisualizer:
     def __init__(self):
@@ -56,3 +57,19 @@ class ModelVisualizer:
         
         plt.savefig('grafico_metricas.png')
         plt.show()
+        
+    def plot_confusion_matrix(self, y_test, predictions, threshold=0.5):
+      y_test_cat = (y_test > threshold).astype(int)
+      pred_cat = (predictions > threshold).astype(int)
+      
+      cm = confusion_matrix(y_test_cat, pred_cat)
+      
+      plt.figure(figsize=(8, 6))
+      sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+                  xticklabels=['Baixa', 'Alta'],
+                  yticklabels=['Baixa', 'Alta'])
+      plt.title('Matriz de Confusão\n(Evasão: Baixa vs Alta)')
+      plt.xlabel('Predito')
+      plt.ylabel('Real')
+      plt.savefig('grafico_matriz_confusao.png')
+      plt.show()

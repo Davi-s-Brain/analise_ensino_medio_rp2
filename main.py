@@ -21,6 +21,7 @@ def main():
     visualizer.plot_learning_curve(history)
     r2 = visualizer.plot_predictions_vs_real(y_test, predictions)
     visualizer.plot_error_distribution(y_test, predictions)
+    visualizer.plot_confusion_matrix(y_test, predictions, threshold=y_test.mean())
     
     metrics = {
         'MAE': mae,
