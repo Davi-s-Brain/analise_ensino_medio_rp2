@@ -1,5 +1,6 @@
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, Dropout
+from tensorflow.keras.regularizers import l1_l2
+from tensorflow.keras.layers import Dense, Dropout, BatchNormalization
 from tensorflow.keras.callbacks import EarlyStopping
 
 class MLPModel:
@@ -9,11 +10,13 @@ class MLPModel:
 
     def _build_model(self, input_dim):
         model = Sequential([
-            Dense(128, activation='relu', input_dim=input_dim),
-            Dense(64, activation='relu'),
-            Dropout(0.4),
+            Dense(64, activation='relu', input_dim=input_dim, kernel_regularizer=l1_l2(l1=0.01, l2=0.01)),
+            BatchNormalization(),
+            Dropout(0.2),
             Dense(32, activation='relu'),
-            Dense(1, activation='linear')
+            BatchNormalization(),
+            Dense(16, activation='relu'),
+            Dense(1)
         ])
         
         model.compile(

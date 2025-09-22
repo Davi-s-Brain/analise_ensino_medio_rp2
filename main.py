@@ -4,9 +4,10 @@ from src.visualization.plots import ModelVisualizer
 
 def main():
     # Carregar e preparar dados
-    data_loader = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
-    df = data_loader.load_data()
-    X_train_scaled, X_test_scaled, y_train, y_test = data_loader.prepare_data(df)
+    data_inse = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
+    inse_with_inep = data_inse.combine_data(data_inse.load_data(), data_inse.create_inse_table())
+
+    X_train_scaled, X_test_scaled, y_train, y_test = data_inse.prepare_data(inse_with_inep)
 
     # Treinar modelo
     model = MLPModel(input_dim=X_train_scaled.shape[1])
@@ -28,6 +29,11 @@ def main():
         'R²': r2,
         'MSE': loss
     }
+
+    print("Métricas do Modelo:")
+    for key, value in metrics.items():
+        print(f"{key}: {value:.4f}")
+
     visualizer.plot_metrics(metrics)
 
 if __name__ == "__main__":
