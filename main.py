@@ -4,7 +4,7 @@ from src.visualization.plots import ModelVisualizer
 
 def main():
     # Carregar e preparar dados
-    data_loader = DataLoader('TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
+    data_loader = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
     df = data_loader.load_data()
     X_train_scaled, X_test_scaled, y_train, y_test = data_loader.prepare_data(df)
 
