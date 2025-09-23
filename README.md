@@ -75,15 +75,15 @@ O projeto utiliza dados do INEP sobre transição escolar, considerando:
 
 ## 📊 Visualizações Geradas
 ### Curva de Aprendizagem
-![Curva de Aprendizagem](./src/visualization/grafico_curva_aprendizagem.png)
+![Curva de Aprendizagem](./src/visualization/graficos/Apenas_taxa_de_evasao/grafico_curva_aprendizagem.png)
 ### Predições vs. Valores Reais
-![Predições vs. Valores Reais](./src/visualization/grafico_real_vs_predito.png)
+![Predições vs. Valores Reais](./src/visualization/graficos/Apenas_taxa_de_evasao/grafico_real_vs_predito.png)
 ### Distribuição dos Erros
-![Distribuição dos Erros](./src/visualization/grafico_distribuicao_erros.png)
+![Distribuição dos Erros](./src/visualization/graficos/Apenas_taxa_de_evasao/grafico_distribuicao_erros.png)
 ### Matriz de Confusão
-![Matriz de Confusão](./src/visualization/grafico_matriz_confusao.png)
+![Matriz de Confusão](./src/visualization/graficos/Apenas_taxa_de_evasao/grafico_matriz_confusao.png)
 ### Métricas de Performance
-![Métricas de Performance](./src/visualization/grafico_metricas.png)
+![Métricas de Performance](./src/visualization/graficos/Apenas_taxa_de_evasao/grafico_metricas.png)
 
 ## 👥 Contribuição
 Sinta-se à vontade para contribuir com o projeto através de Pull Requests ou reportando issues.
