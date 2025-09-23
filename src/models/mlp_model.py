@@ -10,12 +10,12 @@ class MLPModel:
 
     def _build_model(self, input_dim):
         model = Sequential([
-            Dense(64, activation='relu', input_dim=input_dim, kernel_regularizer=l1_l2(l1=0.01, l2=0.01)),
+            Dense(64, activation='selu', input_dim=input_dim, kernel_regularizer=l1_l2(l1=0.01, l2=0.01)),
             BatchNormalization(),
             Dropout(0.2),
-            Dense(32, activation='relu'),
+            Dense(32, activation='selu'),
             BatchNormalization(),
-            Dense(16, activation='relu'),
+            Dense(16, activation='selu'),
             Dense(1)
         ])
         
