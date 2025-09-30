@@ -80,8 +80,10 @@ class DataLoader:
 
         # # Normalizar dados
         # df = self._normalize_features(df)
+        
+        print(df.columns.to_list())
 
-        X = df[['NO_REGIAO', 'NO_UF', 'NO_MUNICIPIO', 'tx_evasao_1_ano_EM', 'tx_evasao_2_ano_EM', 'tx_evasao_3_ano_EM', 'MEDIA_INSE', 'PC_NIVEL_1', 'PC_NIVEL_2', 'PC_NIVEL_3', 'PC_NIVEL_4', 'PC_NIVEL_5', 'PC_NIVEL_6', 'PC_NIVEL_7']]
+        X = df[['NO_REGIAO', 'NO_UF', 'NO_MUNICIPIO', 'tx_evasao_1_ano_EM', 'tx_evasao_2_ano_EM', 'tx_evasao_3_ano_EM', 'MEDIA_INSE', 'PC_NIVEL_1', 'PC_NIVEL_2', 'PC_NIVEL_3', 'PC_NIVEL_4', 'PC_NIVEL_5', 'PC_NIVEL_6', 'PC_NIVEL_7', 'QT_DOC_MED_mean', 'QT_DOC_MED_std', 'QT_DOC_MED_min', 'QT_DOC_MED_max', 'QT_SALAS_EXISTENTES_mean', 'QT_SALAS_EXISTENTES_std', 'QT_SALAS_EXISTENTES_min', 'QT_SALAS_EXISTENTES_max', 'QT_FUNCIONARIOS_mean', 'QT_FUNCIONARIOS_std', 'QT_FUNCIONARIOS_min', 'QT_FUNCIONARIOS_max', 'IN_PREDIO_COMPARTILHADO_mean', 'IN_AGUA_INEXISTENTE_mean', 'IN_ENERGIA_INEXISTENTE_mean', 'IN_ESGOTO_INEXISTENTE_mean', 'IN_BIBLIOTECA_mean', 'IN_LABORATORIO_INFORMATICA_mean', 'IN_QUADRA_ESPORTES_mean', 'IN_REFEITORIO_mean', 'IN_INTERNET_mean', 'IN_INTERNET_ALUNOS_mean', 'IN_BANDA_LARGA_mean', 'IN_PROF_PSICOLOGO_mean', 'IN_PROF_ASSIST_SOCIAL_mean', 'IN_EXAME_SELECAO_mean', 'IN_ORGAO_GREMIO_ESTUDANTIL_mean', 'IN_FINAL_SEMANA_mean', 'QT_MAT_MED_sum', 'QT_MAT_MED_INT_sum']]
         y = df['tx_evasao_total_EM']
         
         X = pd.get_dummies(X, columns=['NO_REGIAO', 'NO_UF', 'NO_MUNICIPIO'])
@@ -187,11 +189,13 @@ class DataLoader:
             '_'.join(col).strip() if isinstance(col, tuple) else col 
             for col in df_municipio.columns.values
         ]
-
+        
+        df_municipio = df_municipio.rename(columns=lambda x: x.rstrip('_') if x.endswith('_') else x)
+        
         return df_municipio
     
-    def combine_data(self, df_inep, df_inse):
-        df_combined = pd.merge(df_inep, df_inse, on=['NO_UF', 'NO_MUNICIPIO'], how='left').dropna()
+    def combine_data(self, df_inep, df_inse, df_microdados):
+        df_combined = df_inep.merge(df_inse, on=['NO_UF', 'NO_MUNICIPIO'], how='left').merge(df_microdados, on=['NO_UF', 'NO_MUNICIPIO'], how='left').dropna()
         return df_combined
     
     def _remove_outliers(self, df, n_std=3):
