@@ -108,104 +108,64 @@ class DataLoader:
         return inse
     
     def create_basic_education_table(self):
-        descricao_campos_evasao = [
-            'Nome da Unidade da Federação',
-            'Nome do Município',
-
-            # Perfil da Escola
-            'Dependência Administrativa', # Porcentagem
-            #'Localização',
-            #'Situação de funcionamento',
-            'Prédio compartilhado com outra escola', # Porcentagem
-            'Escola abre aos finais de semana para a comunidade', # Porcentagem
-            'A escola faz exame de seleção para ingresso de seus alunos (avaliação por prova e/ou análise curricular)', # Porcentagem NAO PEGOU
-
-            # Infraestrutura
-            'Abastecimento de água - Não há abastecimento de água', # Porcentagem
-            'Abastecimento de energia elétrica - Não há energia elétrica', # Porcentagem
-            'Esgoto sanitário - Não há esgotamento sanitário', # Porcentagem
-            'Dependências físicas existentes e utilizadas na escola - Biblioteca', # Porcentagem
-            'Dependências físicas existentes e utilizadas na escola - Laboratório de informática', # Porcentagem
-            'Dependências físicas existentes e utilizadas na escola - Pátio Coberto', # Porcentagem
-            'Dependências físicas existentes e utilizadas na escola - Quadra de esportes coberta ou descoberta', # Porcentagem
-            'Dependências físicas existentes e utilizadas na escola - Refeitório', # Porcentagem
-            'Número de salas de aula existentes na escola', # Média, desvio padrão, min e max
-            'Acesso à Internet', # Porcentagem
-            'Acesso à Internet - Para uso dos alunos', # Porcentagem
-            'Internet Banda Larga', # Porcentagem
-
-            # Recursos Humanos e Corpo Docente
-            'Total de funcionários da escola (inclusive profissionais escolares em sala de aula)',# Média, desvio padrão, min e max
-            'Número de Docentes do Ensino Médio', # Média, desvio padrão, min e max
-            'Profissionais que atuam na escola - Psicólogo(a) Escolar', # Porcentagem
-            'Profissionais que atuam na escola - Orientador(a) comunitário(a) ou assistente social', # Porcentagem
-
-            # Perfil dos Alunos (Dados Agregados)
-            'Número de Matrículas no Ensino Médio',
-            'Número de Matrículas no Ensino Médio - Tempo Integral',
-            'Órgãos colegiados em funcionamento na escola - Grêmio Estudantil',
+        campos_interesse = [     
+            'NO_UF',
+            'NO_MUNICIPIO',
+            'TP_DEPENDENCIA',
+            'IN_PREDIO_COMPARTILHADO',
+            'IN_AGUA_INEXISTENTE',
+            'IN_ENERGIA_INEXISTENTE',
+            'IN_ESGOTO_INEXISTENTE',
+            'IN_BIBLIOTECA',
+            'IN_LABORATORIO_INFORMATICA',
+            'IN_QUADRA_ESPORTES',
+            'IN_REFEITORIO',
+            'IN_INTERNET',
+            'IN_INTERNET_ALUNOS',
+            'IN_BANDA_LARGA',
+            'IN_PROF_PSICOLOGO',
+            'IN_PROF_ASSIST_SOCIAL',
+            'IN_EXAME_SELECAO',
+            'IN_ORGAO_GREMIO_ESTUDANTIL',
+            'QT_DOC_MED',
+            'IN_FINAL_SEMANA', # Nâo pegou
+            'QT_SALAS_EXISTENTES', # Nâo pegou
+            'QT_FUNCIONARIOS', # Nâo pegou
+            'QT_MAT_MED',
+            'QT_MAT_MED_INT'
         ]
         
-        # Read the dictionary file
         dicionario_microdados = pd.read_excel('data/dicionario_dados_educacao_basica.xlsx', skiprows=6)
         
-        # First, let's read a sample of the CSV to get actual column names
-        with ZipFile('data/microdados_ed_basica_2024.zip') as z:
+        with ZipFile('data/microdados_ed_basica_2024.zip') as z: #BAIXAR OS DADOS DE 2020
             with z.open('microdados_ed_basica_2024.csv') as f:
-                # Read just the header to get column names
                 sample = pd.read_csv(f, sep=';', encoding='latin1', nrows=0)
                 available_columns = sample.columns.tolist()
-    
-        # Filter campos_relevantes_evasao to only include columns that exist in the CSV
+
         campos_relevantes_evasao = (dicionario_microdados[
-            dicionario_microdados['Descrição da Variável'].isin(descricao_campos_evasao)]
+            dicionario_microdados['Nome da Variável'].isin(campos_interesse)]
             .iloc[:, 1].tolist())
-    
+        
+
+        print(campos_relevantes_evasao)
+        print('---'*30)
+        print(available_columns)
+
+
         campos_existentes = [col for col in campos_relevantes_evasao if col in available_columns]
-    
-        # 'Escola abre aos finais de semana para a comunidade', # Porcentagem NAO PEGOU
-        # 'A escola faz exame de seleção para ingresso de seus alunos (avaliação por prova e/ou análise curricular)', # Porcentagem NAO PEGOU
-        # 'Número de salas de aula existentes na escola', # Média, desvio padrão, min e max  NAO PEGOU
-        # 'Total de funcionários da escola (inclusive profissionais escolares em sala de aula)',# Média, desvio padrão, min e max NAO PEGOU
-        # 'Número de Matrículas no Ensino Médio', NAO PEGOU
-        # 'Número de Matrículas no Ensino Médio - Tempo Integral', NAO PEGOU
-        
-        # 'NO_UF'
-        # 'NO_MUNICIPIO'
-        # 'TP_DEPENDENCIA'
-        # 'IN_PREDIO_COMPARTILHADO'
-        # 'IN_AGUA_INEXISTENTE'
-        # 'IN_ENERGIA_INEXISTENTE'
-        # 'IN_ESGOTO_INEXISTENTE'
-        # 'IN_BIBLIOTECA'
-        # 'IN_LABORATORIO_INFORMATICA'
-        # 'IN_QUADRA_ESPORTES'
-        # 'IN_REFEITORIO'
-        # 'IN_INTERNET'
-        # 'IN_INTERNET_ALUNOS'
-        # 'IN_BANDA_LARGA'
-        # 'IN_PROF_PSICOLOGO'
-        # 'IN_PROF_ASSIST_SOCIAL'
-        # 'IN_EXAME_SELECAO'
-        # 'IN_ORGAO_GREMIO_ESTUDANTIL'
-        # 'QT_DOC_MED'
-        
-        
-        print(dicionario_microdados['Descrição da Variável'].to_list())
-        print('---'*40)
-        print("Colunas disponíveis:", available_columns)
-        print('---'*40)
-        print("\nColunas selecionadas:", campos_existentes)
-    
-        # Now read the CSV with only the existing columns
+
         with ZipFile('data/microdados_ed_basica_2024.zip') as z:
             with z.open('microdados_ed_basica_2024.csv') as f:
                 microdados = pd.read_csv(f, sep=';', encoding='latin1', 
                                        usecols=campos_existentes)
                 microdados = microdados.fillna(microdados.mean(numeric_only=True))
     
-        # Continue with the rest of the processing
         microdados['NO_UF'] = microdados['NO_UF'].map(estados_br)
+
+        print('---'*30)
+        print(microdados.columns.to_list())
+        print('---'*30)
+
     
         df_municipio = (microdados[microdados['TP_DEPENDENCIA'] != 4]
                        .drop(columns=['TP_DEPENDENCIA'])
@@ -213,6 +173,10 @@ class DataLoader:
                        .agg("mean")
                        .reset_index())
     
+        print(df_municipio.columns.to_list())
+        print(len(df_municipio.columns))
+        print('---'*30)
+        print(df_municipio.head())
         return df_municipio
     
     def combine_data(self, df_inep, df_inse):
