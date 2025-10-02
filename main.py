@@ -51,7 +51,7 @@ def main():
     rf_predictions = rf_model.predict(X_test_scaled)
     rf_metrics = rf_model.evaluate(X_test_scaled, y_test)
     rf_visualizer = ModelVisualizer()
-    rf_r2 = rf_visualizer.plot_predictions_vs_real_rf(y_test, rf_predictions)
+    rf_visualizer.plot_predictions_vs_real_rf(y_test, rf_predictions)
     rf_visualizer.plot_error_distribution_rf(y_test, rf_predictions)
     rf_visualizer.plot_confusion_matrix_rf(y_test, rf_predictions, threshold=y_test.mean())
     rf_metrics_dict = {
