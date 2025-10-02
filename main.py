@@ -37,7 +37,7 @@ def main():
         'MSE': loss
     }
 
-    print("Métricas do Modelo:")
+    print("Métricas do Modelo MLP:")
     for key, value in metrics.items():
         print(f"{key}: {value:.4f}")
 

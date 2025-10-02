@@ -76,7 +76,6 @@ class ModelVisualizer:
     
     def plot_predictions_vs_real_rf(self, y_test, predictions):
         r2 = r2_score(y_test, predictions)
-        print(f"R² Score (Acurácia) RF: {r2:.4f}")
         plt.figure(figsize=(10, 10))
         sns.scatterplot(x=y_test, y=predictions, alpha=0.6)
         plt.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], '--r', linewidth=2)
