@@ -6,7 +6,11 @@ from src.visualization.plots import ModelVisualizer
 def main():
     # Carregar e preparar dados
     data_inse = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
-    inse_with_inep = data_inse.combine_data(data_inse.load_data(), data_inse.create_inse_table())
+    inse_with_inep = data_inse.combine_data(
+        data_inse.load_data(),
+        data_inse.create_inse_table(),
+        data_inse.create_basic_education_table()
+    )
 
     data_inse.create_basic_education_table()
     
@@ -40,6 +44,8 @@ def main():
     visualizer.plot_metrics(metrics)
 
     # Treinar modelo Random Forest
+    print("Métricas do Random Forest:")
+
     rf_model = RandomForestModel()
     rf_model.train(X_train_scaled, y_train)
     rf_predictions = rf_model.predict(X_test_scaled)
@@ -53,9 +59,6 @@ def main():
         'R²': rf_metrics['r2'],
         'MSE': rf_metrics['mse']
     }
-    print("Métricas do Random Forest:")
-    for key, value in rf_metrics_dict.items():
-        print(f"{key}: {value:.4f}")
     rf_visualizer.plot_metrics_rf(rf_metrics_dict)
 
 if __name__ == "__main__":
