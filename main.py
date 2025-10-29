@@ -21,9 +21,20 @@ def main():
     
     # Combina diferentes fontes de dados em um único DataFrame
     inse_with_inep = data_inse.combine_data(
-        data_inse.load_data(),
+        data_inse.create_transicao_table(),
         data_inse.create_inse_table(),
-        data_inse.create_basic_education_table()
+        data_inse.create_basic_education_table(),
+        data_inse.create_afd_table(),
+        data_inse.create_ied_table(),
+        data_inse.create_ideb_table(),
+        data_inse.create_atu_table(),
+        data_inse.create_had_table(),
+        data_inse.create_dsu_table(),
+        data_inse.create_ird_table(),
+        data_inse.create_tdi_table(),
+        data_inse.create_rmd_table(),
+        data_inse.create_tnr_table(),
+        data_inse.create_rendimento_table()
     )
     
     # Prepara os dados dividindo em conjuntos de treino e teste
