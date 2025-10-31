@@ -42,6 +42,7 @@ class DataLoader:
         self.filepath = filepath
         self.skiprows = skiprows
         self.scaler = MinMaxScaler()
+        self.feature_names = None
 
     def prepare_data(self, df, test_size=0.2, random_state=42):
         # # Remover outliers
@@ -96,6 +97,8 @@ class DataLoader:
         y = df['tx_evasao_total_EM']
         
         X = pd.get_dummies(X, columns=['NO_REGIAO', 'NO_UF'])
+        
+        self.feature_names = X.columns.tolist()
         
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=test_size, random_state=random_state

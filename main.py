@@ -109,6 +109,21 @@ def main():
         'MSE': rf_metrics['mse']   # Erro Quadrático Médio
     }
     rf_visualizer.plot_metrics_rf(rf_metrics_dict)
+    
+    # ...
+    print("\n--- 10 Features Mais Importantes (Random Forest) ---")
+    try:
+        # Pega os nomes das features que foram usadas (armazenadas no loader)
+        feature_names = data_inse.feature_names
+        
+        # Chama o novo método que criamos
+        importances_df = rf_model.get_feature_importances(feature_names)
+        
+        # Imprime as 10 mais importantes
+        print(importances_df.head(10).to_string())
+        
+    except Exception as e:
+        print(f"Erro ao obter feature importances: {e}")
 
 if __name__ == "__main__":
     main()
