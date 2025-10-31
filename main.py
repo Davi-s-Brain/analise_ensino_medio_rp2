@@ -1,3 +1,5 @@
+import os
+import pandas as pd
 from src.data.loader import DataLoader
 from src.models.mlp_model import MLPModel
 from src.models.random_forest_model import RandomForestModel
@@ -19,23 +21,29 @@ def main():
     # Inicializa o carregador de dados com o arquivo de transição
     data_inse = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
     
-    # Combina diferentes fontes de dados em um único DataFrame
-    inse_with_inep = data_inse.combine_data(
-        data_inse.create_transicao_table(),
-        data_inse.create_inse_table(),
-        data_inse.create_basic_education_table(),
-        data_inse.create_afd_table(),
-        data_inse.create_ied_table(),
-        data_inse.create_ideb_table(),
-        data_inse.create_atu_table(),
-        data_inse.create_had_table(),
-        data_inse.create_dsu_table(),
-        data_inse.create_ird_table(),
-        data_inse.create_tdi_table(),
-        data_inse.create_rmd_table(),
-        data_inse.create_tnr_table(),
-        data_inse.create_rendimento_table()
-    )
+    if os.path.exists('data/data_combined.csv'):
+        print("Carregando dados combinados do arquivo CSV existente...")
+        inse_with_inep = pd.read_csv('data/data_combined.csv', encoding='utf-8-sig')
+    else:
+        # Combina diferentes fontes de dados em um único DataFrame
+        print("Combinando dados de várias fontes...")
+        inse_with_inep = data_inse.combine_data(
+            data_inse.create_transicao_table(),
+            data_inse.create_inse_table(),
+            data_inse.create_basic_education_table(),
+            data_inse.create_afd_table(),
+            data_inse.create_ied_table(),
+            data_inse.create_ideb_table(),
+            data_inse.create_atu_table(),
+            data_inse.create_had_table(),
+            data_inse.create_dsu_table(),
+            data_inse.create_ird_table(),
+            data_inse.create_tdi_table(),
+            data_inse.create_rmd_table(),
+            data_inse.create_tnr_table(),
+            data_inse.create_rendimento_table(),
+            data_inse.create_pib_table_ibge('data/PIB_MUNICIPAL.csv', 'data/PIB_MUNICIPIOS_COMPLETO_LIMPADO.csv')
+        )
     
     # Prepara os dados dividindo em conjuntos de treino e teste
     X_train_scaled, X_test_scaled, y_train, y_test = data_inse.prepare_data(inse_with_inep)
