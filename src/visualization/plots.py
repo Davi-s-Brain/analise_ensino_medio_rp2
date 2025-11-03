@@ -16,7 +16,7 @@ class ModelVisualizer:
         plt.ylabel('Erro Quadrático Médio (Loss)')
         plt.legend()
         plt.savefig('grafico_curva_aprendizagem.png')
-        plt.show()
+        # plt.show()
 
     def plot_predictions_vs_real(self, y_test, predictions):
         r2 = r2_score(y_test, predictions)
@@ -30,7 +30,7 @@ class ModelVisualizer:
         plt.xlabel('Valores Reais (Taxa de Evasão)')
         plt.ylabel('Predições')
         plt.savefig('grafico_real_vs_predito.png')
-        plt.show()
+        # plt.show()
         
         return r2
 
@@ -43,7 +43,7 @@ class ModelVisualizer:
         plt.ylabel('Frequência')
         plt.axvline(x=0, color='r', linestyle='--')
         plt.savefig('grafico_distribuicao_erros.png')
-        plt.show()
+        # plt.show()
 
     def plot_metrics(self, metrics):
         plt.figure(figsize=(10, 6))
@@ -56,7 +56,7 @@ class ModelVisualizer:
             plt.text(i, v + 0.01, f'{v:.4f}', ha='center')
         
         plt.savefig('grafico_metricas.png')
-        plt.show()
+        # plt.show()
         
     def plot_confusion_matrix(self, y_test, predictions, threshold=0.5):
       y_test_cat = (y_test > threshold).astype(int)
@@ -72,7 +72,7 @@ class ModelVisualizer:
       plt.xlabel('Predito')
       plt.ylabel('Real')
       plt.savefig('grafico_matriz_confusao.png')
-      plt.show()
+    #   plt.show()
     
     def plot_predictions_vs_real_rf(self, y_test, predictions):
         r2 = r2_score(y_test, predictions)
@@ -83,7 +83,7 @@ class ModelVisualizer:
         plt.xlabel('Valores Reais (Taxa de Evasão)')
         plt.ylabel('Predições RF')
         plt.savefig('grafico_real_vs_predito_rf.png')
-        plt.show()
+        # plt.show()
         return r2
 
     def plot_error_distribution_rf(self, y_test, predictions):
@@ -95,7 +95,7 @@ class ModelVisualizer:
         plt.ylabel('Frequência')
         plt.axvline(x=0, color='r', linestyle='--')
         plt.savefig('grafico_distribuicao_erros_rf.png')
-        plt.show()
+        # plt.show()
 
     def plot_metrics_rf(self, metrics):
         plt.figure(figsize=(10, 6))
@@ -106,7 +106,7 @@ class ModelVisualizer:
         for i, v in enumerate(metrics.values()):
             plt.text(i, v + 0.01, f'{v:.4f}', ha='center')
         plt.savefig('grafico_metricas_rf.png')
-        plt.show()
+        # plt.show()
 
     def plot_confusion_matrix_rf(self, y_test, predictions, threshold=0.5):
         y_test_cat = (y_test > threshold).astype(int)
@@ -120,6 +120,6 @@ class ModelVisualizer:
         plt.xlabel('Predito')
         plt.ylabel('Real')
         plt.savefig('grafico_matriz_confusao_rf.png')
-        plt.show()
+        # plt.show()
     def __init__(self):
         sns.set_style("whitegrid")

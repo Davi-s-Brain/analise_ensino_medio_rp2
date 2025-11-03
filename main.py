@@ -42,7 +42,9 @@ def main():
             data_inse.create_rmd_table(),
             data_inse.create_tnr_table(),
             data_inse.create_rendimento_table(),
-            data_inse.create_pib_table_ibge('data/PIB_MUNICIPAL.csv', 'data/PIB_MUNICIPIOS_COMPLETO_LIMPADO.csv')
+            data_inse.create_pib_table_ibge('data/PIB_MUNICIPAL.csv', 'data/PIB_MUNICIPIOS_COMPLETO_LIMPADO.csv'),
+            data_inse.create_idh_table(file_path='data/mundo_onu_adh.csv'),
+            data_inse.create_raca_table('data/POP_COR_SEXO.zip', 'data/RACA_MUNICIPIOS_LIMPADO.csv')
         )
     
     # Prepara os dados dividindo em conjuntos de treino e teste
