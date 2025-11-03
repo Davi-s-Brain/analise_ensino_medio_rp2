@@ -81,7 +81,7 @@ class DataLoader:
             # 'MED_CAT_1_ied', 'MED_CAT_2_ied', 'MED_CAT_3_ied', 'MED_CAT_4_ied', 'MED_CAT_5_ied', 'MED_CAT_6_ied',
 
             # Índice de Desenvolvimento da Educação Básica (Ideb)
-            # 'VL_NOTA_MATEMATICA_2021', 'VL_NOTA_PORTUGUES_2021', 'VL_NOTA_MEDIA_2021', 'VL_OBSERVADO_2021', 'VL_PROJECAO_2021',
+            'VL_NOTA_MATEMATICA_2021', 'VL_NOTA_PORTUGUES_2021', 'VL_NOTA_MEDIA_2021', 'VL_OBSERVADO_2021', 'VL_PROJECAO_2021',
 
             # Média de alunos por turma (ATU)
             # 'MED_CAT_0_atu',
@@ -126,7 +126,7 @@ class DataLoader:
             'ADH_PROP_VULNER_POBREZA',
             
             # Dados IBGE - Raça e gênero
-            # 'CENSO_PERC_HOMENS', 'CENSO_PERC_MULHERES', 'RACA_PERC_INDIGENA', 'RACA_PERC_PRETA_PARDA'
+            'CENSO_PERC_HOMENS', 'CENSO_PERC_MULHERES', 'RACA_PERC_INDIGENA', 'RACA_PERC_PRETA_PARDA'
         ]
         
         # Filtra a lista para apenas colunas que REALMENTE existem no df
@@ -673,6 +673,14 @@ class DataLoader:
 
 
     def combine_data(self, df_transicao, df_inse, df_microdados, df_afd, df_ied, df_ideb, df_atu, df_had, df_dsu, df_ird, df_tdi, df_rmd, df_tnr, df_rendimento, df_ibge, df_idh, df_raca_genero):
+        if 'ADH_NO_MUNICIPIO' in df_idh.columns:
+            df_idh = df_idh.drop(columns=['ADH_NO_MUNICIPIO'])
+            print("Coluna 'ADH_NO_MUNICIPIO' removida do df_idh.")
+            
+        if 'CENSO_NO_MUNICIPIO' in df_raca_genero.columns:
+            df_raca_genero = df_raca_genero.drop(columns=['CENSO_NO_MUNICIPIO'])
+            print("Coluna 'CENSO_NO_MUNICIPIO' removida do df_raca_genero.")
+
         df_combined = (df_transicao
                        .merge(df_inse, on=['NO_UF', 'NO_MUNICIPIO'], how='left')
                        .merge(df_microdados, on=['NO_UF', 'NO_MUNICIPIO'], how='left')
