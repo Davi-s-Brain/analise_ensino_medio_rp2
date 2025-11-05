@@ -59,7 +59,7 @@ class DataLoader:
         original_len = len(df)
         df = df.dropna(subset=[target])
         print(f"Removidas {original_len - len(df)} linhas por alvo ('{target}') ausente.")
-        y = df[target]
+        y = pd.qcut(df[target], q=4, labels=['Baixa Evasão', 'Média Baixa', 'Média Alta', 'Alta Evasão'])
 
         
         # --- 3. Definir Lista de Features (X) ---
@@ -72,44 +72,45 @@ class DataLoader:
             'MEDIA_INSE', 'PC_NIVEL_1', 'PC_NIVEL_2', 'PC_NIVEL_3', 'PC_NIVEL_4', 'PC_NIVEL_5', 'PC_NIVEL_6', 'PC_NIVEL_7',
 
             # Microdados
-            # 'QT_DOC_MED_mean', 'QT_DOC_MED_std', 'QT_DOC_MED_min', 'QT_DOC_MED_max', 'QT_SALAS_EXISTENTES_mean', 'QT_SALAS_EXISTENTES_std', 'QT_SALAS_EXISTENTES_min', 'QT_SALAS_EXISTENTES_max', 'QT_FUNCIONARIOS_mean', 'QT_FUNCIONARIOS_std', 'QT_FUNCIONARIOS_min', 'QT_FUNCIONARIOS_max', 'IN_PREDIO_COMPARTILHADO_mean', 'IN_AGUA_INEXISTENTE_mean', 'IN_ENERGIA_INEXISTENTE_mean', 'IN_ESGOTO_INEXISTENTE_mean', 'IN_BIBLIOTECA_mean', 'IN_LABORATORIO_INFORMATICA_mean', 'IN_QUADRA_ESPORTES_mean', 'IN_REFEITORIO_mean', 'IN_INTERNET_mean', 'IN_INTERNET_ALUNOS_mean', 'IN_BANDA_LARGA_mean', 'IN_PROF_PSICOLOGO_mean', 'IN_PROF_ASSIST_SOCIAL_mean', 'IN_EXAME_SELECAO_mean', 'IN_ORGAO_GREMIO_ESTUDANTIL_mean', 'IN_FINAL_SEMANA_mean', 'QT_MAT_MED_sum', 'QT_MAT_MED_INT_sum',
+            'QT_DOC_MED_mean', 'QT_DOC_MED_std', 'QT_DOC_MED_min', 'QT_DOC_MED_max', 'QT_SALAS_EXISTENTES_mean', 'QT_SALAS_EXISTENTES_std', 'QT_SALAS_EXISTENTES_min', 'QT_SALAS_EXISTENTES_max', 'QT_FUNCIONARIOS_mean', 'QT_FUNCIONARIOS_std', 'QT_FUNCIONARIOS_min', 'QT_FUNCIONARIOS_max', 'IN_PREDIO_COMPARTILHADO_mean', 'IN_AGUA_INEXISTENTE_mean', 'IN_ENERGIA_INEXISTENTE_mean', 'IN_ESGOTO_INEXISTENTE_mean', 'IN_BIBLIOTECA_mean', 'IN_LABORATORIO_INFORMATICA_mean', 'IN_QUADRA_ESPORTES_mean', 'IN_REFEITORIO_mean', 'IN_INTERNET_mean', 'IN_INTERNET_ALUNOS_mean', 'IN_BANDA_LARGA_mean', 'IN_PROF_PSICOLOGO_mean', 'IN_PROF_ASSIST_SOCIAL_mean', 'IN_EXAME_SELECAO_mean', 'IN_ORGAO_GREMIO_ESTUDANTIL_mean', 'IN_FINAL_SEMANA_mean', 'QT_MAT_MED_sum', 'QT_MAT_MED_INT_sum',
             
             # Adequação da formação docente (AFD)
-            # 'MED_CAT_1_afd', 'MED_CAT_2_afd', 'MED_CAT_3_afd', 'MED_CAT_4_afd', 'MED_CAT_5_afd',
+            'MED_CAT_1_afd', 'MED_CAT_2_afd', 'MED_CAT_3_afd', 'MED_CAT_4_afd', 'MED_CAT_5_afd',
 
             # Indicador de esforço docente (IED)
-            # 'MED_CAT_1_ied', 'MED_CAT_2_ied', 'MED_CAT_3_ied', 'MED_CAT_4_ied', 'MED_CAT_5_ied', 'MED_CAT_6_ied',
+            'MED_CAT_1_ied', 'MED_CAT_2_ied', 'MED_CAT_3_ied', 'MED_CAT_4_ied', 'MED_CAT_5_ied', 'MED_CAT_6_ied',
 
-            # Índice de Desenvolvimento da Educação Básica (Ideb)
+            # Índice de Desenvolvimento da Educação Básica (Ideb) (Muletas)
             'VL_NOTA_MATEMATICA_2021', 'VL_NOTA_PORTUGUES_2021', 'VL_NOTA_MEDIA_2021', 'VL_OBSERVADO_2021', 'VL_PROJECAO_2021',
 
             # Média de alunos por turma (ATU)
-            # 'MED_CAT_0_atu',
+            'MED_CAT_0_atu',
 
             # Média Horas-aula diária (HAD)
-            # 'MED_CAT_0_had',
+            'MED_CAT_0_had',
 
             # Percentual de docentes com curso superior (DSU)
             'MED_CAT_0_dsu',
 
             # Regularidade do corpo docente (IRD)
-            # 'EDU_BAS_CAT_1', 'EDU_BAS_CAT_2', 'EDU_BAS_CAT_3', 'EDU_BAS_CAT_4',
+            'EDU_BAS_CAT_1', 'EDU_BAS_CAT_2', 'EDU_BAS_CAT_3', 'EDU_BAS_CAT_4',
 
-            # Taxa de distorção idade série (TDI)
-            # 'MED_CAT_0_tdi', 'MED_01_CAT_0_tdi', 'MED_02_CAT_0_tdi', 'MED_03_CAT_0_tdi'
+            # Taxa de distorção idade série (z) (Muletas)
+            'MED_CAT_0_tdi', 'MED_01_CAT_0_tdi', 'MED_02_CAT_0_tdi', 'MED_03_CAT_0_tdi'
 
             # Remuneração média dos docentes (RMD)
-            # 'ED_BAS_CAT1', 'ED_BAS_CAT2', 'ED_BAS_CAT3', 'ED_BAS_CAT4', 'ED_BAS_CAT5', 'ED_BAS_CAT6', 'ED_BAS_CAT7', 'ED_BAS_CAT8',
+            'ED_BAS_CAT1', 'ED_BAS_CAT2', 'ED_BAS_CAT3', 'ED_BAS_CAT4', 'ED_BAS_CAT5', 'ED_BAS_CAT6', 'ED_BAS_CAT7', 'ED_BAS_CAT8',
             
             
             # Dados IBGE - PIB (Nomes longos)
             # 'IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES', 'PARTICIPACAO_DO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_NO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_NO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_NO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_NO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_NO_PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES_DO_BRASIL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_MICRORREGIAO_GEOGRAFIC', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DO_BRASIL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_DO_BRASIL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_DO_BRASIL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_DO_BRASIL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_DA_GRANDE_REGIAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_NO_VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL_DO_BRASIL', 'PARTICIPACAO_DOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_NOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_DA_GRANDE_REGIAO', 'PARTICIPACAO_DOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_NOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_DA_MESORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_NOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_DA_MICRORREGIAO_GEOGRAFICA', 'PARTICIPACAO_DOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_NOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_DA_UNIDADE_DA_FEDERACAO', 'PARTICIPACAO_DOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_NOS_IMPOSTOS_LIQUIDOS_DE_SUBSIDIOS_SOBRE_PRODUTOS_A_PRECOS_CORRENTES_DO_BRASIL', 'PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES', 'VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL', 'VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_AGROPECUARIA', 'VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DA_INDUSTRIA', 'VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_DOS_SERVICOS_EXCLUSIVE_ADMINISTRACAO_DEFESA_EDUCACAO_E_SAUDE_PUBLICAS_E_SEGURIDADE_SOCIAL', 'VALOR_ADICIONADO_BRUTO_A_PRECOS_CORRENTES_TOTAL',
             
             # Engenharia de features
-            'RISCO_SOCIAL_TDI_PIB', 
-            'RISCO_PEDAGOGICO_TDI_ATU', 
-            'RISCO_INFRA_TDI_NET',
-            'RISCO_GOVERNANCA_IDH',
+            'RISCO_SOCIAL_TDI_PIB', # Muleta
+            'RISCO_PEDAGOGICO_TDI_ATU', # Muleta
+            'RISCO_INFRA_TDI_NET', # Muleta
+            'RISCO_GOVERNANCA_IDH', # Muleta
+            
             
             # IDH (Índice de Desenvolvimento Humano)
             'ADH_IDHM',
@@ -120,13 +121,19 @@ class DataLoader:
             'ADH_PERC_POPULACAO_RURAL',
             'ADH_TX_ANALFABETISMO_25_MAIS',
             'ADH_EXPECTATIVA_ANOS_ESTUDO',
-            'ADH_TX_ATRASO_2_FUNDAMENTAL',
+            'ADH_TX_ATRASO_2_FUNDAMENTAL', # Muleta
             'ADH_RENDA_PER_CAPITA',
             'ADH_PROP_POBREZA_EXTREMA',
             'ADH_PROP_VULNER_POBREZA',
             
             # Dados IBGE - Raça e gênero
-            'CENSO_PERC_HOMENS', 'CENSO_PERC_MULHERES', 'RACA_PERC_INDIGENA', 'RACA_PERC_PRETA_PARDA'
+            'CENSO_PERC_HOMENS', 'CENSO_PERC_MULHERES', 'RACA_PERC_INDIGENA', 'RACA_PERC_PRETA_PARDA',
+            
+            # Dados Bolsa Família
+            'BF_QTD_FAMILIAS_MEDIA_MENSAL',
+            'BF_VALOR_ANUAL_TOTAL',
+            'BF_VALOR_MEDIO_POR_FAMILIA_ANUAL',
+            'BF_PERC_POPULACAO'
         ]
         
         # Filtra a lista para apenas colunas que REALMENTE existem no df
@@ -322,9 +329,6 @@ class DataLoader:
         df_municipio = df_municipio.rename(columns=lambda x: x.rstrip('_') if x.endswith('_') else x)
         
         return df_municipio
-    
-
-
 
 
     def create_afd_table(self):
@@ -672,7 +676,7 @@ class DataLoader:
                 return pd.DataFrame() # Retorna DF vazio
 
 
-    def combine_data(self, df_transicao, df_inse, df_microdados, df_afd, df_ied, df_ideb, df_atu, df_had, df_dsu, df_ird, df_tdi, df_rmd, df_tnr, df_rendimento, df_ibge, df_idh, df_raca_genero):
+    def combine_data(self, df_transicao, df_inse, df_microdados, df_afd, df_ied, df_ideb, df_atu, df_had, df_dsu, df_ird, df_tdi, df_rmd, df_tnr, df_rendimento, df_ibge, df_idh, df_raca_genero, df_bolsa_familia):
         if 'ADH_NO_MUNICIPIO' in df_idh.columns:
             df_idh = df_idh.drop(columns=['ADH_NO_MUNICIPIO'])
             print("Coluna 'ADH_NO_MUNICIPIO' removida do df_idh.")
@@ -699,7 +703,21 @@ class DataLoader:
                        .merge(df_idh, on=['CO_MUNICIPIO_7'], how='left')
                        .merge(df_raca_genero, on=['CO_MUNICIPIO_7'], how='left'))
         
+        df_combined['CO_MUNICIPIO_6'] = df_combined['CO_MUNICIPIO_7'] // 10
+        
+        df_combined = df_combined.merge(df_bolsa_familia, on=['CO_MUNICIPIO_6'], how='left')
+        
         print("Iniciando Engenharia de Features (criando colunas de Risco)...")
+        
+        if 'BF_QTD_FAMILIAS_MEDIA_MENSAL' in df_combined.columns and 'ADH_POPULACAO_TOTAL' in df_combined.columns:
+            print("Criando feature 'BF_PERC_POPULACAO'...")
+            # Assumindo 2.5 pessoas por família (média nacional)
+            populacao_beneficiaria = df_combined['BF_QTD_FAMILIAS_MEDIA_MENSAL'] * 2.5 
+            pop_total_safe = df_combined['ADH_POPULACAO_TOTAL'].replace(0, np.nan)
+
+            # Calcula a % da população (de 2010) que recebe benefício (em 2021)
+            df_combined['BF_PERC_POPULACAO'] = (populacao_beneficiaria / pop_total_safe)
+            df_combined['BF_PERC_POPULACAO'] = df_combined['BF_PERC_POPULACAO'].fillna(0)
         
         # Assumindo que a coluna do PIB já está limpa e é numérica
         pib_col = 'PRODUTO_INTERNO_BRUTO_A_PRECOS_CORRENTES'
@@ -945,3 +963,76 @@ class DataLoader:
                         os.rmdir(temp_dir)
                 except Exception as e:
                     print(f"Aviso: Não foi possível limpar o arquivo temporário. Erro: {e}")
+                    
+    
+    def create_bolsa_familia_table(self, file_path='data/bolsa_familia_2021.csv', cached_file_path='data/BOLSA_FAMILIA_LIMPADO.csv'):
+        """
+        Carrega os dados do Bolsa Família de 2021.
+        Agrega os 12 meses para ter uma média anual por município.
+        """
+        
+        # --- 1. Verificação de Cache ---
+        if os.path.exists(cached_file_path):
+            print(f"Arquivo cacheado do Bolsa Família '{cached_file_path}' encontrado. Carregando diretamente.")
+            try:
+                df_final = pd.read_csv(cached_file_path)
+                return df_final
+            except Exception as e:
+                print(f"Erro ao ler o cache '{cached_file_path}'. Recriando... Erro: {e}")
+                
+        print(f"Cache '{cached_file_path}' não encontrado. Iniciando processamento de '{file_path}'...")
+        
+        try:
+            # --- 2. Carregar o CSV ---
+            df = pd.read_csv(file_path, encoding='utf-8')
+            
+            # --- 3. Limpar Dados ---
+            # Renomear colunas
+            df = df.rename(columns={
+                'ibge': 'CO_MUNICIPIO_6',
+                'qtd_familias_beneficiarias_bolsa_familia': 'QTD_FAMILIAS',
+                'valor_repassado_bolsa_familia': 'VALOR_REPASSADO'
+            })
+            
+            # Converter colunas para numérico (trata valores faltantes `,,`)
+            df['QTD_FAMILIAS'] = pd.to_numeric(df['QTD_FAMILIAS'], errors='coerce').fillna(0)
+            df['VALOR_REPASSADO'] = pd.to_numeric(df['VALOR_REPASSADO'], errors='coerce').fillna(0)
+            
+            # --- 4. Agregação ---
+            # Agrupa por município (que é o CO_MUNICIPIO_6)
+            print("Agregando dados mensais do Bolsa Família por município...")
+            df_agregado = df.groupby('CO_MUNICIPIO_6').agg(
+                # Queremos a média de famílias ao longo do ano
+                BF_QTD_FAMILIAS_MEDIA_MENSAL=('QTD_FAMILIAS', 'mean'),
+                # Queremos o valor total pago no ano
+                BF_VALOR_ANUAL_TOTAL=('VALOR_REPASSADO', 'sum')
+            ).reset_index()
+            
+            # --- 5. Engenharia de Feature (Valor por Família) ---
+            # Calcula o valor médio anual por família beneficiária
+            df_agregado['BF_QTD_FAMILIAS_MEDIA_MENSAL_SAFE'] = df_agregado['BF_QTD_FAMILIAS_MEDIA_MENSAL'].replace(0, np.nan)
+            df_agregado['BF_VALOR_MEDIO_POR_FAMILIA_ANUAL'] = df_agregado['BF_VALOR_ANUAL_TOTAL'] / df_agregado['BF_QTD_FAMILIAS_MEDIA_MENSAL_SAFE']
+            df_agregado = df_agregado.fillna(0) # Preenche NaNs (onde qtd_familias era 0)
+
+            # --- 6. Seleção Final ---
+            colunas_finais = [
+                'CO_MUNICIPIO_6',
+                'BF_QTD_FAMILIAS_MEDIA_MENSAL',
+                'BF_VALOR_ANUAL_TOTAL',
+                'BF_VALOR_MEDIO_POR_FAMILIA_ANUAL'
+            ]
+            df_final = df_agregado[colunas_finais].copy()
+            
+            # --- 7. Salvar no Cache ---
+            print(f"Salvando dados processados do Bolsa Família no cache: '{cached_file_path}'")
+            df_final.to_csv(cached_file_path, index=False)
+            
+            print("Dados do Bolsa Família processados e prontos para o merge.")
+            return df_final
+
+        except FileNotFoundError:
+            print(f"Erro: Arquivo '{file_path}' não foi encontrado.")
+            return pd.DataFrame()
+        except Exception as e:
+            print(f"Erro ao processar o arquivo do Bolsa Família: {e}")
+            return pd.DataFrame()

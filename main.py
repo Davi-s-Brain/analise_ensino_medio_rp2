@@ -44,7 +44,8 @@ def main():
             data_inse.create_rendimento_table(),
             data_inse.create_pib_table_ibge('data/PIB_MUNICIPAL.csv', 'data/PIB_MUNICIPIOS_COMPLETO_LIMPADO.csv'),
             data_inse.create_idh_table(file_path='data/mundo_onu_adh.csv'),
-            data_inse.create_raca_table('data/POP_COR_SEXO.zip', 'data/RACA_MUNICIPIOS_LIMPADO.csv')
+            data_inse.create_raca_table('data/POP_COR_SEXO.zip', 'data/RACA_MUNICIPIOS_LIMPADO.csv'),
+            data_inse.create_bolsa_familia_table('data/bolsa_familia_2021.csv', 'data/BOLSA_FAMILIA_LIMPADO.csv')
         )
     
     # Prepara os dados dividindo em conjuntos de treino e teste
@@ -56,26 +57,29 @@ def main():
     
     print("\n=== Análise do Modelo MLP ===")
     
+    print("Convertendo labels de texto para inteiros (0, 1, 2, 3) para o MLP...")
+    y_train_int = y_train.astype('category').cat.codes
+    y_test_int = y_test.astype('category').cat.codes
     # Treinamento do modelo
     model = MLPModel(input_dim=X_train_scaled.shape[1])
-    history = model.train(X_train_scaled, y_train)
+    history = model.train(X_train_scaled, y_train_int)
     
     # Avaliação do modelo
     predictions = model.predict(X_test_scaled)
-    loss, mae = model.evaluate(X_test_scaled, y_test)
+    mlp_metrics = model.evaluate(X_test_scaled, y_test_int)
     
     # Visualização dos resultados
     visualizer = ModelVisualizer()
     visualizer.plot_learning_curve(history)  # Curva de aprendizado
-    r2 = visualizer.plot_predictions_vs_real(y_test, predictions)  # Predições vs valores reais
-    visualizer.plot_error_distribution(y_test, predictions)  # Distribuição dos erros
-    visualizer.plot_confusion_matrix(y_test, predictions, threshold=y_test.mean())  # Matriz de confusão
+    # r2 = visualizer.plot_predictions_vs_real(y_test_int, predictions)  # Predições vs valores reais
+    # visualizer.plot_error_distribution(y_test_int, predictions)  # Distribuição dos erros
+    visualizer.plot_confusion_matrix(y_test_int, predictions)  # Matriz de confusão
     
     # Exibição das métricas
     metrics = {
-        'MAE': mae,   # Erro Médio Absoluto
-        'R²': r2,     # Coeficiente de determinação
-        'MSE': loss   # Erro Quadrático Médio
+        'Acurácia': mlp_metrics['accuracy'],
+        'F1-Score (Macro)': mlp_metrics['f1_score_macro'],
+        'Loss': mlp_metrics['loss']
     }
 
     print("\nMétricas do Modelo MLP:")
@@ -100,16 +104,23 @@ def main():
     
     # Visualização dos resultados
     rf_visualizer = ModelVisualizer()
-    rf_visualizer.plot_predictions_vs_real_rf(y_test, rf_predictions)  # Predições vs valores reais
-    rf_visualizer.plot_error_distribution_rf(y_test, rf_predictions)   # Distribuição dos erros
-    rf_visualizer.plot_confusion_matrix_rf(y_test, rf_predictions, threshold=y_test.mean())  # Matriz de confusão
+    
+    # --- CORREÇÃO ---
+    # Essas duas funções são para REGRESSÃO e não funcionam com Classificação.
+    # rf_visualizer.plot_predictions_vs_real_rf(y_test, rf_predictions)
+    # rf_visualizer.plot_error_distribution_rf(y_test, rf_predictions)
+    
+    # O gráfico CORRETO de "Predição vs Real" para Classificação é a Matriz de Confusão:
+    print("Gerando Matriz de Confusão para o Random Forest...")
+    # O 'threshold' não faz mais sentido, pois temos 4 classes
+    rf_visualizer.plot_confusion_matrix_rf(y_test, rf_predictions)
     
     # Exibição das métricas
     rf_metrics_dict = {
-        'MAE': rf_metrics['mae'],  # Erro Médio Absoluto
-        'R²': rf_metrics['r2'],    # Coeficiente de determinação
-        'MSE': rf_metrics['mse']   # Erro Quadrático Médio
+        'Acurácia': rf_metrics['accuracy'],
+        'F1-Score (Macro)': rf_metrics['f1_score_macro']
     }
+
     rf_visualizer.plot_metrics_rf(rf_metrics_dict)
     
     # ...

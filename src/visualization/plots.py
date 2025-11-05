@@ -1,5 +1,6 @@
-import matplotlib.pyplot as plt
+import numpy as np
 import seaborn as sns
+import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
 from sklearn.metrics import confusion_matrix
 
@@ -58,21 +59,41 @@ class ModelVisualizer:
         plt.savefig('grafico_metricas.png')
         # plt.show()
         
-    def plot_confusion_matrix(self, y_test, predictions, threshold=0.5):
-      y_test_cat = (y_test > threshold).astype(int)
-      pred_cat = (predictions > threshold).astype(int)
-      
-      cm = confusion_matrix(y_test_cat, pred_cat)
-      
-      plt.figure(figsize=(8, 6))
-      sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                  xticklabels=['Baixa', 'Alta'],
-                  yticklabels=['Baixa', 'Alta'])
-      plt.title('Matriz de Confusão\n(Evasão: Baixa vs Alta)')
-      plt.xlabel('Predito')
-      plt.ylabel('Real')
-      plt.savefig('grafico_matriz_confusao.png')
-    #   plt.show()
+    def plot_confusion_matrix(self, y_test, predictions):
+        """
+        Plota uma matriz de confusão MULTI-CLASSE (4x4) para o MLP.
+        (Versão de Classificação, sem 'threshold')
+        """
+        print("Gerando Matriz de Confusão (Multi-classe) para MLP...")
+        
+        # Pega os nomes das classes (ex: [0, 1, 2, 3])
+        # e ordena para que a matriz fique consistente
+        class_labels = sorted(np.unique(y_test))
+        
+        # 1. Calcula a Matriz de Confusão
+        cm = confusion_matrix(y_test, predictions, labels=class_labels)
+        
+        # 2. Plota o Heatmap
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm, 
+            annot=True,     # Mostra os números dentro de cada célula
+            fmt='d',        # Formato dos números (inteiro)
+            cmap='Blues',   # Cor
+            xticklabels=class_labels, 
+            yticklabels=class_labels
+        )
+        
+        plt.title('Matriz de Confusão - MLP (Classificação)')
+        plt.ylabel('Verdadeiro (Real)')
+        plt.xlabel('Predito')
+        
+        # Salva a figura
+        filename = 'grafico_matriz_confusao.png'
+        plt.savefig(filename, bbox_inches='tight')
+        print(f"Matriz de confusão do MLP salva em '{filename}'")
+        # plt.show()
+        plt.close() # Fecha a figura para economizar memória
     
     def plot_predictions_vs_real_rf(self, y_test, predictions):
         r2 = r2_score(y_test, predictions)
@@ -108,18 +129,41 @@ class ModelVisualizer:
         plt.savefig('grafico_metricas_rf.png')
         # plt.show()
 
-    def plot_confusion_matrix_rf(self, y_test, predictions, threshold=0.5):
-        y_test_cat = (y_test > threshold).astype(int)
-        pred_cat = (predictions > threshold).astype(int)
-        cm = confusion_matrix(y_test_cat, pred_cat)
-        plt.figure(figsize=(8, 6))
-        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-                    xticklabels=['Baixa', 'Alta'],
-                    yticklabels=['Baixa', 'Alta'])
-        plt.title('Matriz de Confusão (Random Forest)')
+    def plot_confusion_matrix_rf(self, y_test, predictions):
+        """
+        Plota uma matriz de confusão MULTI-CLASSE (4x4) para o Random Forest.
+        (Versão de Classificação, sem 'threshold')
+        """
+        print("Gerando Matriz de Confusão (Multi-classe) para RF...")
+        
+        # Pega os nomes das classes (ex: 'Alta Evasão', 'Baixa Evasão', ...)
+        # e ordena para que a matriz fique consistente
+        class_labels = sorted(y_test.unique())
+        
+        # 1. Calcula a Matriz de Confusão
+        cm = confusion_matrix(y_test, predictions, labels=class_labels)
+        
+        # 2. Plota o Heatmap
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm, 
+            annot=True,     # Mostra os números dentro de cada célula
+            fmt='d',        # Formato dos números (inteiro)
+            cmap='Oranges', # Cor
+            xticklabels=class_labels, 
+            yticklabels=class_labels
+        )
+        
+        plt.title('Matriz de Confusão - Random Forest (Classificação)')
+        plt.ylabel('Verdadeiro (Real)')
         plt.xlabel('Predito')
-        plt.ylabel('Real')
-        plt.savefig('grafico_matriz_confusao_rf.png')
+        
+        # Salva a figura
+        filename = 'grafico_matriz_confusao_rf.png'
+        plt.savefig(filename, bbox_inches='tight')
+        print(f"Matriz de confusão do RF salva em '{filename}'")
         # plt.show()
+        plt.close() # Fecha a figura para economizar memória
+
     def __init__(self):
         sns.set_style("whitegrid")
