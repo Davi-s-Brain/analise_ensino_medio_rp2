@@ -1,8 +1,11 @@
 import numpy as np
 import seaborn as sns
+from itertools import cycle
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
+from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import confusion_matrix
+from sklearn.preprocessing import label_binarize
 
 class ModelVisualizer:
     def __init__(self):
@@ -164,6 +167,57 @@ class ModelVisualizer:
         print(f"Matriz de confusão do RF salva em '{filename}'")
         # plt.show()
         plt.close() # Fecha a figura para economizar memória
+        
+    def plot_roc_curve(self, y_test, y_proba, class_labels, model_name=''):
+        """
+        Plota as curvas ROC para um problema multi-classe (One-vs-Rest).
+        
+        Args:
+            y_test: Os labels verdadeiros (ex: [0, 1, 2, 3] ou ['Baixa', 'Alta', ...])
+            y_proba: As probabilidades de cada classe (saída do .predict_proba())
+            class_labels: A lista ordenada das classes (ex: [0, 1, 2, 3] ou ['Alta', 'Baixa', ...])
+            model_name: O nome do modelo (ex: "Random Forest")
+        """
+        print(f"Gerando Curva ROC (One-vs-Rest) para {model_name}...")
+        
+        # 1. Binarizar os labels (ex: 'Média Alta' -> [0, 0, 1, 0])
+        # Isso garante que funcione tanto para texto (RF) quanto para inteiros (MLP)
+        y_test_binarized = label_binarize(y_test, classes=class_labels)
+        n_classes = y_test_binarized.shape[1]
+
+        # 2. Calcular a ROC e AUC para cada classe
+        fpr = dict()
+        tpr = dict()
+        roc_auc = dict()
+        for i in range(n_classes):
+            fpr[i], tpr[i], _ = roc_curve(y_test_binarized[:, i], y_proba[:, i])
+            roc_auc[i] = auc(fpr[i], tpr[i])
+
+        # 3. Plotar
+        plt.figure(figsize=(10, 8))
+        colors = cycle(['blue', 'red', 'green', 'orange', 'purple'])
+        
+        for i, color in zip(range(n_classes), colors):
+            plt.plot(
+                fpr[i], 
+                tpr[i], 
+                color=color, 
+                lw=2,
+                label=f'Classe: {class_labels[i]} (AUC = {roc_auc[i]:.2f})'
+            )
+
+        plt.plot([0, 1], [0, 1], 'k--', lw=2, label='Chute Aleatório (AUC = 0.50)')
+        plt.xlim([0.0, 1.0])
+        plt.ylim([0.0, 1.05])
+        plt.xlabel('Taxa de Falsos Positivos (FPR)')
+        plt.ylabel('Taxa de Verdadeiros Positivos (TPR)')
+        plt.title(f'Curva ROC (One-vs-Rest) - {model_name}')
+        plt.legend(loc="lower right")
+        
+        filename = f'grafico_curva_roc_{model_name.lower().replace(" ", "_")}.png'
+        plt.savefig(filename, bbox_inches='tight')
+        print(f"Curva ROC salva em '{filename}'")
+        plt.close()
 
     def __init__(self):
         sns.set_style("whitegrid")

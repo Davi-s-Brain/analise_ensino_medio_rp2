@@ -42,7 +42,6 @@ def main():
             data_inse.create_rmd_table(),
             data_inse.create_tnr_table(),
             data_inse.create_rendimento_table(),
-            data_inse.create_pib_table_ibge('data/PIB_MUNICIPAL.csv', 'data/PIB_MUNICIPIOS_COMPLETO_LIMPADO.csv'),
             data_inse.create_idh_table(file_path='data/mundo_onu_adh.csv'),
             data_inse.create_raca_table('data/POP_COR_SEXO.zip', 'data/RACA_MUNICIPIOS_LIMPADO.csv'),
             data_inse.create_bolsa_familia_table('data/bolsa_familia_2021.csv', 'data/BOLSA_FAMILIA_LIMPADO.csv')
@@ -87,6 +86,17 @@ def main():
         print(f"{key}: {value:.4f}")
 
     visualizer.plot_metrics(metrics)
+    
+    print("Gerando Curva ROC para o MLP...")
+    # Pega as probabilidades
+    mlp_probabilities = model.predict_proba(X_test_scaled)
+    # Plota
+    visualizer.plot_roc_curve(
+        y_test_int,             # Os labels verdadeiros (0, 1, 2, 3)
+        mlp_probabilities,      # As probabilidades
+        model.class_labels,     # A lista [0, 1, 2, 3]
+        model_name='MLP'
+    )
 
     #############################
     # 3. MODELO RANDOM FOREST   #
@@ -122,6 +132,17 @@ def main():
     }
 
     rf_visualizer.plot_metrics_rf(rf_metrics_dict)
+    
+    print("Gerando Curva ROC para o Random Forest...")
+    # Pega as probabilidades
+    rf_probabilities = rf_model.predict_proba(X_test_scaled)
+    # Plota
+    rf_visualizer.plot_roc_curve(
+        y_test,                 # Os labels verdadeiros (texto)
+        rf_probabilities,       # As probabilidades
+        rf_model.class_labels,  # A lista de textos (ex: 'Alta Evasão'...)
+        model_name='Random Forest'
+    )
     
     # ...
     print("\n--- 10 Features Mais Importantes (Random Forest) ---")

@@ -112,3 +112,8 @@ class MLPModel:
         """Retorna as classes preditas (0, 1, 2, 3)."""
         predictions_proba = self.model.predict(X_test, verbose=0)
         return np.argmax(predictions_proba, axis=1)
+    
+    def predict_proba(self, X_test):
+        """Retorna as probabilidades de predição."""
+        # No Keras, .predict() já retorna as probabilidades da camada softmax
+        return self.model.predict(X_test, verbose=0)

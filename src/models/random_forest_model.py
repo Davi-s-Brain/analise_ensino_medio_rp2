@@ -133,3 +133,7 @@ class RandomForestModel:
         importances_df = importances_df.sort_values(by='importance', ascending=False).reset_index(drop=True)
         
         return importances_df
+    
+    def predict_proba(self, X):
+        """Retorna as probabilidades de predição."""
+        return self.model.predict_proba(X)
