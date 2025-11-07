@@ -1,9 +1,15 @@
 import os
+import argparse
 import pandas as pd
 from src.data.loader import DataLoader
-from src.models.mlp_model import MLPModel
-from src.models.random_forest_model import RandomForestModel
-from src.visualization.plots import ModelVisualizer
+from src.models.mlp_regressor import MLPRegressorModel
+from src.models.gamma_regressor import GammaRegressorModel
+from src.visualization.plots_regressao import RegressorVisualizer
+from src.models.random_forest_regressor import RandomForestRegressorModel
+from src.models.mlp_classifier_model import MLPModel as MLPClassifierModel
+from src.visualization.plots import ModelVisualizer as ClassifierVisualizer
+from src.models.random_forest_model import RandomForestModel as RandomForestClassifierModel
+
 
 def main():
     """
@@ -18,15 +24,30 @@ def main():
     # 1. CARREGAMENTO E PREPARAÇÃO DOS DADOS #
     ###########################################
     
+    parser = argparse.ArgumentParser(
+        description="Executa o pipeline de análise de evasão escolar."
+    )
+
+    parser.add_argument(
+        '--mode', 
+        type=str, 
+        required=True, 
+        choices=['class', 'reg'],
+        help="Define o modo de operação: 'class' (quartis) ou 'reg' (valor contínuo)."
+    )
+    args = parser.parse_args()
+    MODE = args.mode
+    print(f"--- EXECUTANDO EM MODO: {MODE.upper()} ---")
+    
     # Inicializa o carregador de dados com o arquivo de transição
     data_inse = DataLoader('data/TX_TRANSICAO_MUNICIPIOS_2021_2022.xlsx')
     
+    # Lógica de cache
     if os.path.exists('data/data_combined.csv'):
         print("Carregando dados combinados do arquivo CSV existente...")
         inse_with_inep = pd.read_csv('data/data_combined.csv', encoding='utf-8-sig')
     else:
-        # Combina diferentes fontes de dados em um único DataFrame
-        print("Combinando dados de várias fontes...")
+        # Carrega todas as tabelas
         inse_with_inep = data_inse.combine_data(
             data_inse.create_transicao_table(),
             data_inse.create_inse_table(),
@@ -47,117 +68,140 @@ def main():
             data_inse.create_bolsa_familia_table('data/bolsa_familia_2021.csv', 'data/BOLSA_FAMILIA_LIMPADO.csv')
         )
     
-    # Prepara os dados dividindo em conjuntos de treino e teste
-    X_train_scaled, X_test_scaled, y_train, y_test = data_inse.prepare_data(inse_with_inep)
-
-    ##############################
-    #       2. MODELO MLP        #
-    ##############################
-    
-    print("\n=== Análise do Modelo MLP ===")
-    
-    print("Convertendo labels de texto para inteiros (0, 1, 2, 3) para o MLP...")
-    y_train_int = y_train.astype('category').cat.codes
-    y_test_int = y_test.astype('category').cat.codes
-    # Treinamento do modelo
-    model = MLPModel(input_dim=X_train_scaled.shape[1])
-    history = model.train(X_train_scaled, y_train_int)
-    
-    # Avaliação do modelo
-    predictions = model.predict(X_test_scaled)
-    mlp_metrics = model.evaluate(X_test_scaled, y_test_int)
-    
-    # Visualização dos resultados
-    visualizer = ModelVisualizer()
-    visualizer.plot_learning_curve(history)  # Curva de aprendizado
-    # r2 = visualizer.plot_predictions_vs_real(y_test_int, predictions)  # Predições vs valores reais
-    # visualizer.plot_error_distribution(y_test_int, predictions)  # Distribuição dos erros
-    visualizer.plot_confusion_matrix(y_test_int, predictions)  # Matriz de confusão
-    
-    # Exibição das métricas
-    metrics = {
-        'Acurácia': mlp_metrics['accuracy'],
-        'F1-Score (Macro)': mlp_metrics['f1_score_macro'],
-        'Loss': mlp_metrics['loss']
-    }
-
-    print("\nMétricas do Modelo MLP:")
-    for key, value in metrics.items():
-        print(f"{key}: {value:.4f}")
-
-    visualizer.plot_metrics(metrics)
-    
-    print("Gerando Curva ROC para o MLP...")
-    # Pega as probabilidades
-    mlp_probabilities = model.predict_proba(X_test_scaled)
-    # Plota
-    visualizer.plot_roc_curve(
-        y_test_int,             # Os labels verdadeiros (0, 1, 2, 3)
-        mlp_probabilities,      # As probabilidades
-        model.class_labels,     # A lista [0, 1, 2, 3]
-        model_name='MLP'
+    # Prepara os dados de acordo com o modo
+    X_train_scaled, X_test_scaled, y_train, y_test = data_inse.prepare_data(
+        inse_with_inep, mode=MODE
     )
 
-    #############################
-    # 3. MODELO RANDOM FOREST   #
-    #############################
+    ###########################################
+    #       2. MODO DE CLASSIFICAÇÃO          #
+    ###########################################
     
-    print("\n=== Análise do Random Forest ===")
-    
-    # Treinamento do modelo
-    rf_model = RandomForestModel()
-    rf_model.train(X_train_scaled, y_train)
-    
-    # Avaliação do modelo
-    rf_predictions = rf_model.predict(X_test_scaled)
-    rf_metrics = rf_model.evaluate(X_test_scaled, y_test)
-    
-    # Visualização dos resultados
-    rf_visualizer = ModelVisualizer()
-    
-    # --- CORREÇÃO ---
-    # Essas duas funções são para REGRESSÃO e não funcionam com Classificação.
-    # rf_visualizer.plot_predictions_vs_real_rf(y_test, rf_predictions)
-    # rf_visualizer.plot_error_distribution_rf(y_test, rf_predictions)
-    
-    # O gráfico CORRETO de "Predição vs Real" para Classificação é a Matriz de Confusão:
-    print("Gerando Matriz de Confusão para o Random Forest...")
-    # O 'threshold' não faz mais sentido, pois temos 4 classes
-    rf_visualizer.plot_confusion_matrix_rf(y_test, rf_predictions)
-    
-    # Exibição das métricas
-    rf_metrics_dict = {
-        'Acurácia': rf_metrics['accuracy'],
-        'F1-Score (Macro)': rf_metrics['f1_score_macro']
-    }
+    if MODE == 'class':
+        print("\n=== Análise do Modelo MLP (Classificação) ===")
+        # Converte labels para inteiros para o MLP
+        y_train_int = y_train.astype('category').cat.codes
+        y_test_int = y_test.astype('category').cat.codes
+        
+        # --- CORREÇÃO DE TYPO: MLPClassifierModel ---
+        model = MLPClassifierModel(input_dim=X_train_scaled.shape[1])
+        history = model.train(X_train_scaled, y_train_int)
+        mlp_metrics = model.evaluate(X_test_scaled, y_test_int)
+        mlp_predictions = model.predict(X_test_scaled)
+        
+        metrics = {
+            'Acurácia': mlp_metrics['accuracy'],
+            'F1-Score (Macro)': mlp_metrics['f1_score_macro'],
+            'Loss': mlp_metrics['loss']
+        }
+        
+        print("\nMétricas do Modelo MLP:")
+        for key, value in metrics.items():
+            print(f"{key}: {value:.4f}")
+        
+        # --- CORREÇÃO DE INSTÂNCIA: ClassifierVisualizer ---
+        visualizer = ClassifierVisualizer()
+        visualizer.plot_learning_curve(history)
+        visualizer.plot_confusion_matrix(y_test_int, mlp_predictions)
+        
+        print("Gerando Curva ROC para o MLP...")
+        mlp_probabilities = model.predict_proba(X_test_scaled)
+        visualizer.plot_roc_curve(
+            y_test_int,             # Os labels verdadeiros (0, 1, 2, 3)
+            mlp_probabilities,      # As probabilidades
+            model.class_labels,     # A lista [0, 1, 2, 3]
+            model_name='MLP'
+        )
 
-    rf_visualizer.plot_metrics_rf(rf_metrics_dict)
-    
-    print("Gerando Curva ROC para o Random Forest...")
-    # Pega as probabilidades
-    rf_probabilities = rf_model.predict_proba(X_test_scaled)
-    # Plota
-    rf_visualizer.plot_roc_curve(
-        y_test,                 # Os labels verdadeiros (texto)
-        rf_probabilities,       # As probabilidades
-        rf_model.class_labels,  # A lista de textos (ex: 'Alta Evasão'...)
-        model_name='Random Forest'
-    )
-    
-    # ...
-    print("\n--- 10 Features Mais Importantes (Random Forest) ---")
-    try:
-        # Pega os nomes das features que foram usadas (armazenadas no loader)
+        print("\n=== Análise do Random Forest (Classificação) ===")
+        rf_model = RandomForestClassifierModel()
+        # Mude para tune=True se quiser rodar a otimização
+        rf_model.train(X_train_scaled, y_train, tune=False) 
+        rf_predictions = rf_model.predict(X_test_scaled)
+        rf_metrics = rf_model.evaluate(X_test_scaled, y_test)
+        rf_metrics_dict = {
+            'Acurácia': rf_metrics['accuracy'],
+            'F1-Score (Macro)': rf_metrics['f1_score_macro']
+        }
+        
+        # --- CORREÇÃO DE INSTÂNCIA: ClassifierVisualizer ---
+        rf_visualizer = ClassifierVisualizer()
+        
+        # Assumindo que você tem uma função 'plot_metrics' no seu ClassifierVisualizer
+        # Se ela se chamar 'plot_metrics_rf', mude aqui.
+        rf_visualizer.plot_metrics(rf_metrics_dict) 
+        
+        rf_visualizer.plot_confusion_matrix_rf(y_test, rf_predictions)
+        
+        print("Gerando Curva ROC para o Random Forest...")
+        rf_probabilities = rf_model.predict_proba(X_test_scaled)
+        rf_visualizer.plot_roc_curve(
+            y_test,                 # Os labels verdadeiros (texto)
+            rf_probabilities,       # As probabilidades
+            rf_model.class_labels,  # A lista de textos (ex: 'Alta Evasão'...)
+            model_name='Random Forest'
+        )
+        
+        print("\n--- 10 Features Mais Importantes (Classificação) ---")
         feature_names = data_inse.feature_names
-        
-        # Chama o novo método que criamos
         importances_df = rf_model.get_feature_importances(feature_names)
+        print(importances_df.head(10).to_string())
+
+    ###########################################
+    #         3. MODO DE REGRESSÃO            #
+    ###########################################
+    
+    elif MODE == 'reg':
         
-        # Imprime as 10 mais importantes
+        # --- CORREÇÃO DE INSTÂNCIA: RegressorVisualizer ---
+        reg_viz = RegressorVisualizer()
+        # O visualizer do classificador (para a curva de aprendizado do MLP)
+        class_viz = ClassifierVisualizer()
+        
+        print("\n=== Análise do Modelo MLP (Regressão) ===")
+        mlp_reg = MLPRegressorModel(input_dim=X_train_scaled.shape[1])
+        mlp_history = mlp_reg.train(X_train_scaled, y_train)
+        mlp_reg_metrics = mlp_reg.evaluate(X_test_scaled, y_test)
+
+        # --- Plots do MLP ---
+        mlp_predictions = mlp_reg.predict(X_test_scaled)
+        class_viz.plot_learning_curve(mlp_history)
+        reg_viz.plot_predictions_vs_real(y_test, mlp_predictions, model_name='MLP')
+        reg_viz.plot_error_distribution(y_test, mlp_predictions, model_name='MLP')
+        reg_viz.plot_metrics(mlp_reg_metrics, model_name='MLP')
+        
+
+        print("\n=== Análise do Random Forest (Regressão) ===")
+        rf_reg = RandomForestRegressorModel()
+        rf_reg.train(X_train_scaled, y_train, tune=False) 
+        rf_reg_metrics = rf_reg.evaluate(X_test_scaled, y_test)
+        
+        # --- Plots do RF ---
+        rf_predictions = rf_reg.predict(X_test_scaled)
+        reg_viz.plot_predictions_vs_real(y_test, rf_predictions, model_name='Random_Forest')
+        reg_viz.plot_error_distribution(y_test, rf_predictions, model_name='Random_Forest')
+        reg_viz.plot_metrics(rf_reg_metrics, model_name='Random_Forest')
+        
+        print("\n--- 10 Features Mais Importantes (Regressão) ---")
+        feature_names = data_inse.feature_names
+        importances_df = rf_reg.get_feature_importances(feature_names)
         print(importances_df.head(10).to_string())
         
-    except Exception as e:
-        print(f"Erro ao obter feature importances: {e}")
+        
+        print("\n=== Análise do Gamma Regressor ===")
+        gamma_reg = GammaRegressorModel()
+        gamma_reg.train(X_train_scaled, y_train, tune=False)
+        gamma_reg_metrics = gamma_reg.evaluate(X_test_scaled, y_test)
+        
+        # --- Plots do Gamma ---
+        gamma_predictions = gamma_reg.predict(X_test_scaled)
+        reg_viz.plot_predictions_vs_real(y_test, gamma_predictions, model_name='Gamma')
+        reg_viz.plot_error_distribution(y_test, gamma_predictions, model_name='Gamma')
+        reg_viz.plot_metrics(gamma_reg_metrics, model_name='Gamma')
+        
+        print("\n--- 10 Features Mais Importantes (Gamma Regressor) ---")
+        importances_df_gamma = gamma_reg.get_feature_importances(feature_names)
+        print(importances_df_gamma.head(10).to_string())
 
 if __name__ == "__main__":
     main()

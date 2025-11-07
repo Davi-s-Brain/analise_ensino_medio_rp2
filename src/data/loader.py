@@ -46,7 +46,7 @@ class DataLoader:
         self.scaler = MinMaxScaler()
         self.feature_names = None
 
-    def prepare_data(self, df, test_size=0.2, random_state=42):        
+    def prepare_data(self, df, mode, test_size=0.2, random_state=42):        
         # --- 1. Definir Alvo (y) e Limpar NaNs do Alvo ---
         target = 'tx_evasao_total_EM'
         if target not in df.columns:
@@ -141,6 +141,21 @@ class DataLoader:
 
         X = df[cols_existentes].copy()
         
+        # Tratamento de 'y'
+        if mode == 'class':
+            print("Criando 4 quartis (grupos) para o alvo...")
+            y = pd.qcut(
+                df[target], 
+                q=4, 
+                labels=['Baixa Evasão', 'Média Baixa', 'Média Alta', 'Alta Evasão']
+            )
+        elif mode == 'reg':
+            print("Usando alvo contínuo (Regressão)...")
+            # Adiciona um valor muito pequeno para garantir y > 0 (para o GammaRegressor)
+            y = df[target] + 1e-6 
+        else:
+            raise ValueError(f"Modo '{mode}' desconhecido. Use 'class' ou 'reg'.")
+        
         # --- 4. Encoding de Categóricas ---
         # dummy_na=True cria uma coluna "NO_REGIAO_nan", o que pode ser útil
         print("Aplicando One-Hot Encoding em colunas categóricas...")
@@ -158,7 +173,6 @@ class DataLoader:
         
         
         # --- 6. Imputação (Preenchimento de NaNs) ---
-        print("Preenchendo valores ausentes (NaN) com a mediana do treino...")
         imputer = SimpleImputer(strategy='median')
         
         # "Fita" (treina) o imputer APENAS com X_train
@@ -176,7 +190,6 @@ class DataLoader:
             X_test_imputed_data, columns=self.feature_names, index=X_test.index
         )
         
-        
         # --- 7. Scaling (Normalização) ---
         print("Escalando (normalizando) os dados...")
         
@@ -186,6 +199,11 @@ class DataLoader:
         # "Transforma" (escala) ambos
         X_train_scaled_data = self.scaler.transform(X_train_imputed)
         X_test_scaled_data = self.scaler.transform(X_test_imputed)
+
+        if mode == 'regressao':
+            print("Adicionando epsilon aos dados de X (para Gamma Regressor)...")
+            X_train_scaled_data += 1e-6
+            X_test_scaled_data += 1e-6
 
         # Converte de volta para DataFrame (bom para depuração e feature importance)
         X_train_scaled = pd.DataFrame(
