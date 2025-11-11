@@ -1,0 +1,259 @@
+% Template for RBIE papers in LaTeX
+%
+
+% The above language combination is for this template document only.
+% You should use one of the following:
+\documentclass[english, spanish, brazilian]{RBIEarticle} % for papers in portuguese
+%\documentclass[brazilian, spanish, english]{RBIEarticle} % for papers in english
+%\documentclass[brazilian, english, spanish]{RBIEarticle} % for papers in spanish
+
+% Papers in Portuguese or Spanish may require the following lines:
+\usepackage[utf8]{inputenc} % chooses UTF-8 as the main character set
+\usepackage[T1]{fontenc} % for correct syllable separation in accented words
+\usepackage{booktabs}
+\usepackage{breakurl}
+
+% The next two statements are needed for the example table in this document
+% (i.e. you don't necessarily need them in your own paper)
+\usepackage{colortbl}
+\definecolor{gray}{gray}{.8}
+
+% Citations and references (Biblatex)
+\usepackage[style=apa]{biblatex}
+\usepackage{csquotes}
+\addbibresource{references.bib}
+
+% Here goes the paper main title
+\title{Previsão da taxa de evasão de alunos do ensino médio a nível municipal usando aprendizado de máquina}
+
+% If the manuscript is written in English, then this element must be removed.
+\titleinenglish{Prediction of high school dropout rates at municipal level using machine learning}
+
+\titleinspanish{Predicción de la deserción escolar en la educación secundaria a nivel municipal utilizando aprendizaje automático}
+
+% Here goes the paper author information (repeat for two or more authors)
+\author{%
+	\begin{tabular}{p{7cm} p{7cm}}
+		André Miyazawa & Davi Batista de Souza \\
+		Universidade de São Paulo & Universidade de São Paulo \\
+		andre08.m@usp.br & davi.batista@usp.br \\
+		\\[1.5ex]
+		Fernando Webes Soares Brandão & Gabriel Castellar \\
+		Universidade de São Paulo & Universidade de São Paulo \\
+		fbrandao@usp.br & gabriel.castellar@usp.br \\
+	\end{tabular}
+}
+
+\Submission{20/08/2025}
+\First_round_notif{20/08/2025}
+\New_version{dd/Mmm/2025}
+\Second_round_notif{dd/Mmm/2025}
+\Camera_ready{dd/Mmm/2025}
+\Edition_review{dd/Mmm/2025}
+\Available_online{dd/Mmm/2025}
+\Published{dd/Mmm/2025}
+
+% Here goes the page heading information
+\heading{Souza et al.}{RBIE v.VV – 2025}
+
+% And finally here goes the citation information
+\citeas{Castellar, G., Miyazawa, A., Souza, D. B., \& Brandão, F. W. S. (2025). Previsão da taxa de evasão de alunos do ensino médio a nível municipal usando aprendizado de máquina. Revista Brasileira de Informática na Educação, VV, pp-pp. https://doi.org/10.5753/rbie.2025.id}
+
+%====================================================================
+%\hyphenpenalty=10000
+%\setcounter{page}{01}
+
+\begin{document}
+\maketitle
+
+% If the manuscript is written in English, then this element must be removed.
+\begin{otherlanguage}{brazilian}
+\begin{abstract}
+Este artigo propõe-se a investigar a predição da evasão de alunos do ensino médio em instituições brasileiras a nível municipal utilizando técnicas de aprendizado de máquina (ML). A evasão escolar é um fenômeno multifacetado, influenciado por fatores socioeconômicos, institucionais e raciais, e representa um dos principais desafios da educação básica no Brasil. Abordagens tradicionais são limitadas para capturar sua dinâmica, tornando o ML uma ferramenta ideal para previsão.
+Nosso estudo pretende empregar os dados do Censo Escolar da Educação Básica, incluindo o perfil dos alunos, características das instituições e aspectos pedagógicos. Além deste conjunto de dados, utilizaremos também o Índice Socioeconômico (Inse) do IBGE e as Taxas de Transição do INEP, que contêm as taxas de evasão escolar. Também identificaremos e definiremos as variáveis mais relacionadas à evasão, como idade, gênero, origem escolar e infraestrutura institucional.
+A metodologia envolverá a aplicação e comparação de modelos de aprendizado supervisionado: \#TOFIX Regressão Linear, Multilayer Perceptron (MLP) e Floresta Aleatória (Random Forest). O objetivo é avaliar o desempenho por meio das métricas RMSE, MAE e R², investigando a precisão das previsões e a capacidade de explicação dos fatores associados à evasão. Essa análise comparativa ira determinar qual abordagem (linear ou não-linear) é mais adequada e identificará os fatores mais relevantes que influenciam a evasão institucional. O estudo contribuirá para o avanço do ML na educação, fornecendo subsídios para políticas públicas mais eficazes no combate à evasão escolar e destacando a necessidade de abordagens integradas.
+\keywords <Evasão Escolar; Aprendizado de Máquina; Ensino Médio; Predição; Políticas Públicas; Censo Escolar.
+
+\end{abstract}
+\end{otherlanguage}
+
+%====================================================================
+
+\section{Introdução}
+A evasão escolar é um problema recorrente e multifacetado na educação, afetando escolas e universidades em diversos níveis de ensino em todo o mundo. No Brasil, ela se mantém como um dos principais desafios da educação básica, estando intrinsecamente ligada a desigualdades sociais, econômicas e institucionais. O fenômeno é influenciado por uma complexa interação de variáveis, tanto externas às instituições – como condições socioeconômicas desfavoráveis, a necessidade de trabalho, a ausência de políticas de apoio e gravidez – quanto internas, incluindo a qualidade do ensino, dificuldades de aprendizagem e a insuficiência de políticas institucionais de permanência.
+
+No Brasil, de acordo com o IBGE (2020), a necessidade de trabalhar é uma razão predominante para a evasão entre jovens de todas as regiões, com taxas mais altas no Sul (48,3\%) e Centro-Oeste (43,1\%), e a falta de interesse em estudar é outro motivo comum, especialmente no Nordeste (31,5\%). Para o público masculino, a urgência em ingressar no mercado de trabalho é o fator predominante (58,3\% dos casos), enquanto para mulheres (41,7\% dos casos), a falta de interesse (24,1\%), a necessidade de trabalhar e a gravidez (ambas com 23,8\%), e os afazeres domésticos (11,5\%) são razões significativas. De acordo com o IBGE (2020), jovens pretos e pardos representam a maioria entre aqueles que não concluíram a educação básica, e a transição do ensino fundamental para o médio constitui um momento crítico para o abandono escolar.
+
+A evasão não só acarreta prejuízos no processo de aprendizagem do aluno, mas também gera perdas financeiras consideráveis para as instituições de ensino, sejam elas públicas ou privadas. Para mitigar este desafio, pesquisas têm explorado a aplicação de técnicas de mineração de dados (MD) e aprendizado de máquina (AM) para investigar problemas na educação, incluindo a evasão estudantil. Por meio dessas técnicas, é possível identificar padrões em indivíduos ou grupos que podem levar ao abandono dos estudos. O campo da mineração de dados educacionais (Educational Data Mining - EDM) emerge como uma abordagem inovadora para obter um panorama dos índices de evasão escolar.
+
+No contexto brasileiro, as pesquisas que utilizaram EDM para abordar a evasão ainda estão em seus estágios iniciais, situação que não acompanha os avanços internacionais nesse assunto, assim ainda há uma escassez de estudos que apliquem técnicas de aprendizado de máquina a dados da educação básica brasileira, especialmente voltados à evasão no ensino médio. Essa lacuna evidencia a necessidade de investigações que adaptem e testem essas abordagens no contexto nacional.
+
+Dada a complexidade do fenômeno, abordagens estatísticas comuns mostram-se limitadas para capturar relações não lineares e interdependentes entre variáveis. Nesse contexto, técnicas de Aprendizado de Máquina se mostram como alternativas mais promissoras, permitindo a identificação de novos padrões e a previsão de comportamentos futuros não vistos com os métodos tradicionais. Este estudo tem como objetivo aplicar e comparar modelos de Regressão Linear, Multilayer Perceptron (MLP) e e Floresta Aleatória (Random Forest) na previsão da taxa de evasão escolar em instituições de ensino médio, utilizando dados do Censo Escolar da Educação Básica. A proposta busca avaliar o desempenho dos modelos a partir de métricas específicas e identificar os fatores mais relevantes associados ao abandono a nível institucional, contribuindo para a formulação de políticas públicas mais eficazes.
+
+
+\section{Fundamentos Teóricos}
+Os fatores que atuam na evasão escolar no Brasil refletem complexas questões socioeconômicas, de gênero, raça e regionais e que podem ser divididas em duas categorias: Variáveis externas e variáveis internas.
+
+Dentre as variáveis externas, podemos citar o ambiente em que o aluno vive e a cultura que ele presencia, necessidades concretas como moradia, transporte, alimentação, materiais didáticos, a necessidade de trabalhar para sustentar a si e a sua família, e a saúde do estudante. Juntamente com todos esses problemas, também temos a falta/insuficiência de políticas de assistência social, de saúde e emprego do governo para apoiar os estudantes em necessidade.
+
+As variáveis internas são os problemas institucionais e pessoais/psicopedagógicos, como a má qualidade de ensino, a frustração do aluno com o curso ou com a instituição, dificuldades de aprendizagem, adaptação e motivação do estudante e a falta de políticas institucionais de permanência, ou seja, a ausência de ações tanto governamentais quanto institucionais para garantir a permanência e a conclusão dos cursos pelos alunos.
+
+O perfil dos jovens que não completaram a educação básica revela uma forte marca de desigualdade. Dentre todas essas variáveis, podemos perceber características específicas que afetam a grande maioria da evasão escolar. De acordo com o IBGE em um estudo feito em julho de 2020, 71,7\% dos jovens nessa situação são pretos ou pardos, em contraste com 27,3\% de brancos. A idade também é uma variável crucial, com a transição do ensino fundamental para o médio, já que, enquanto a taxa de evasão de alunos até 14 anos se mantém em torno de 8\%, ela salta para 14,1\% aos 15 anos e continua a crescer, chegando a 17,7\% aos 16 anos.
+
+As causas e a dinâmica da evasão escolar também variam entre as diferentes regiões do Brasil. A necessidade de trabalhar foi a principal razão alegada por jovens de todas as regiões, sendo que no Sul (48,3\%) e no Centro-Oeste (43,1\%) as taxas são maiores e no Nordeste, menor (34,1\%). Já o não interesse em estudar foi o segundo principal motivo informado, sempre acima de 25\%, com destaque para o Nordeste, com 31,5\%.
+
+Por fim, a evasão por gênero varia significativamente, tanto em números quanto nos motivos. Para o público masculino (58,3\% dos casos), a urgência em ingressar no mercado de trabalho é o fator predominante, citado por metade dos jovens que deixaram a escola. Já entre as mulheres (41,7\% dos casos), o cenário é mais diversificado: a falta de interesse (24,1\%) é a principal razão, mas é seguida de perto pela necessidade de trabalhar e pela gravidez, ambas com 23,8\%, além dos afazeres domésticos (11,5\%), que também possuem um peso significativo.
+
+Tendo em vista que a evasão escolar é um fenômeno multifacetado, entende-se que a análise tradicional de dados, baseada em estatísticas descritivas ou testes de hipóteses, em geral, não é suficiente para abranger a dinâmica completa nesse contexto. Entretanto, o \textbf{Aprendizado de Máquina (Machine Learning)} pode ser uma abordagem interessante. Como um subcampo da Inteligência Artificial, o ML permite que modelos computacionais aprendam padrões e relações complexas diretamente dos dados, sem a necessidade de programação explícita de regras. Ao invés de descrever o que aconteceu, os modelos de ML são projetados para prever o que acontecerá, tornando-os ferramentas ideais para a previsão da taxa de evasão.
+
+Neste estudo, serão utilizados os modelos \textbf{regressão linear}, \textbf{Multilayer Perceptron (MLP)} e \textbf{Floresta Aleatória (Random Forest)} para comparação da eficiência na previsão da taxa de evasão escolar de instituições de ensino. A Regressão Linear é um modelo estatístico fundamental, que assume uma relação linear entre as variáveis preditoras (características da escola) e a variável-alvo (taxa de evasão). Contudo, sua principal limitação reside na suposição de uma relação puramente linear. Em contraste, o Multilayer Perceptron (MLP) é uma rede neural artificial capaz de modelar e capturar relações não-lineares e complexas nos dados. Sua estrutura, composta por múltiplas camadas de neurônios, permite que ele aprenda representações complexas das informações, o que o torna potencialmente superior à regressão linear na previsão de um fenômeno com múltiplas causas interconectadas. Em contrapartida, a Floresta Aleatória é um método de aprendizado em conjunto que combina múltiplas árvores de decisão para realizar previsões. Cada árvore é treinada com uma amostra aleatória dos dados originais e, em cada divisão da árvore, apenas um subconjunto aleatório das características é considerado. A previsão final é obtida através da média das previsões individuais (para regressão) ou votação majoritária (para classificação).
+
+Para comparar a eficiência dos modelos, é necessário definir métricas de avaliação apropriadas. Como a variável-alvo do estudo é a taxa de evasão, que é uma variável contínua, o problema se enquadra na categoria de regressão. Tendo isso em vista, as métricas a seguir serão utilizadas para quantificar o desempenho de cada modelo:
+\begin{itemize}
+    \item \textbf{Erro Quadrático Médio da Raiz (RMSE)}: Esta métrica mede a raiz quadrada da média dos erros ao quadrado. É útil para penalizar erros maiores, indicando a precisão do modelo em suas previsões.
+    \item \textbf{Erro Médio Absoluto (MAE)}: O MAE calcula a média das diferenças absolutas entre as previsões e os valores reais. É uma métrica mais intuitiva, pois seu valor corresponde à média da magnitude do erro do modelo.
+    \item \textbf{Coeficiente de Determinação ($R^2$)}: O $R^2$ indica a proporção da variância na variável-alvo que é previsível a partir das variáveis preditoras. Um valor mais próximo de 1.0 sugere que o modelo explica uma maior proporção da variabilidade dos dados e, portanto, se ajusta melhor a eles.
+\end{itemize}
+A comparação da eficiência dos modelos será baseada em como eles se saem em cada uma dessas métricas, permitindo uma análise da abordagem (linear ou não-linear) mais adequada para prever a evasão escolar.
+
+\section{Trabalhos relacionados}
+Com o objetivo de investigar e analisar o fenômeno da evasão e retenção estudantil, bem como o sucesso acadêmico, utilizando técnicas de mineração de dados (MD) e aprendizado de máquina (AM), os trabalhos analisados exploram diversas abordagens e contextos. Esses estudos buscam identificar padrões e determinantes que podem levar ao abandono dos estudos ou à permanência prolongada, além de propor soluções para mitigar esses problemas.
+
+Jesus e Gusmão (2024) realizaram um mapeamento sistemático sobre a aplicação de MD e AM na classificação de dados em estudos de evasão escolar. A busca em cinco bases bibliográficas (ACM, IEEE Xplore, Scopus, ScienceDirect, WoS) resultou em 71 estudos relevantes. O estudo identificou maior recorrência de experiências com ensino superior presencial. O ano de 2020 teve mais publicações, e algoritmos baseados em árvores de decisão foram os mais frequentes. Houve um crescimento médio de estudos na última década, com China, EUA e Espanha liderando, mas com aumento de publicações brasileiras. Apenas 12 estudos especificaram metodologias de MD (CRISP-DM ou KDD). Mais de 30\% dos estudos relevantes obtiveram $R^2$ superior a 95\%.
+
+Ramos et al. (2018) compararam cinco classificadores na predição de risco de evasão em cursos EAD, destacando o alto índice de evasão no Brasil (ex: 11\% a 25\% em 32\% das instituições em 2016). Usando dados de interação de uma universidade pública, o estudo aplicou a metodologia KDD. Os resultados mostraram leve vantagem para a Regressão Logística, com taxas de sucesso acima de 90\%. A Regressão Logística foi escolhida por sua transparência, interpretabilidade e reconhecimento na área. Os autores notaram uma carência de associação da escolha de variáveis a uma teoria específica da EAD nos trabalhos analisados.
+
+Araújo, Mariano e Oliveira (2021) investigaram os determinantes da retenção (permanência prolongada além do tempo regular) em cursos presenciais de instituições federais brasileiras, um problema com custos financeiros. Usando dados do Censo de 2016 e regressão logística multinomial ordenada, o estudo concluiu que a ampliação de bolsas e apoio assistencial é relevante para conter a retenção. Características como ser homem, branco, participante de políticas afirmativas ou ingressante via Enem contribuem negativamente para a retenção prolongada. Por outro lado, estudantes mais velhos e, com exceção da área de saúde, do sexo feminino, apresentaram maior probabilidade de retenção, possivelmente por conciliarem estudos com outras responsabilidades. O ingresso pelo Enem mostrou-se consistentemente associado a uma redução na probabilidade de atraso na conclusão.
+
+No contexto da EAD, Silva et al. (2025) analisaram os determinantes da evasão sob a ótica das IES, usando dados do Censo (2018-2022) e Regressão Linear Múltipla. Os resultados mostraram que as taxas de evasão variam significativamente (média de 60,32\%) e que idade, gênero e origem escolar têm efeito significativo. Uma maior proporção de estudantes com 40 anos ou mais levou a menores taxas de evasão. Inversamente, mais ingressantes mulheres e egressos de escolas públicas implicaram em maiores taxas, o que os autores atribuem à dedicação feminina ao cuidado/trabalho e a defasagens de aprendizado. O estudo ressaltou a natureza multifatorial da evasão na EAD.
+
+Em um estudo exploratório e bibliográfico, Mendes (2013) refletiu sobre os processos de inclusão e evasão no ensino médio pela ótica da motivação. O autor destaca que a evasão é um fenômeno complexo, multifatorial (influenciado por alunos, famílias, escolas) e o estágio final de um desengajamento cumulativo. A pesquisa ressalta a importância central da motivação, observando que o desinteresse dos alunos é um problema preocupante no ensino médio, e que a queda na motivação leva ao declínio do engajamento e à evasão. Mendes também diferencia evasão (retorno possível) de abandono (saída definitiva) e aponta a relevância de fatores institucionais, como infraestrutura, no engajamento.
+
+Em uma análise descritiva, Crelier (2020) investigou os fatores de abandono escolar entre jovens (14-29 anos) usando a PNAD Contínua 2019. O estudo revela que a necessidade de trabalhar (citada por metade dos homens e 23,8\% das mulheres) e o desinteresse (33\% homens, 24,1\% mulheres) são as principais razões. Para o público feminino, gravidez (23,8\%) e afazeres domésticos (11,5\%) também são fatores significativos. Crelier (2020) aponta a transição para o ensino médio como um momento crítico, com taxas de evasão quase dobrando a partir dos 15 anos (14,1\% aos 15, 17,7\% aos 16), evidenciando a urgência de políticas que tornem a educação mais atrativa e conciliável com o trabalho.
+
+Em uma abordagem focada na precisão conceitual, Vitelli, Fritsch e Rocha (2016) realizaram uma revisão bibliográfica (1996-2015) sobre as concepções e usos do termo 'evasão escolar' na educação superior, analisando estudos com fórmulas de cálculo. A pesquisa identificou que o indicador está associado a diferentes perspectivas, temporalidades, granularidades e fórmulas de mensuração. Os autores argumentam que a ausência de um conceito e fórmula comuns compromete diagnósticos precisos e a avaliação comparável entre cursos, instituições e políticas públicas, levando a comparações estatisticamente incomparáveis. O estudo sublinha a importância de definições rigorosas e metodologias consistentes para a confiabilidade de estudos preditivos.
+
+Paula e Picanço (2024), em investigação inédita, analisaram a relação entre a origem social e a evasão do sistema de ensino superior brasileiro, distinguindo-a da evasão de curso ou instituição. A pesquisa pareou dados do Enem 2013 e do Censo da Educação Superior (CES) para acompanhar os ingressantes de 2014 por seis anos (até 2019). Utilizando regressão logística multinível, os resultados revelaram que desigualdades raciais e socioeconômicas persistem. Estudantes negros, de baixa renda ou com menor escolaridade parental demonstraram maiores chances de evadir, sendo as disparidades mais acentuadas em bacharelados e instituições privadas. O estudo também destacou a importância do apoio social e atividades extracurriculares. Ao focar na evasão do sistema, o trabalho preenche uma lacuna sobre o impacto das desigualdades sociais na trajetória educacional.
+
+Por fim, Neves (2024) propôs e avaliou o FICARE, um framework para mitigar a reprovação e evasão na EAD usando mineração de dados e textos. O estudo de caso em uma IES pública (UAB/Unimontes), com 4675 acadêmicos, usou algoritmos de ML supervisionado em Python, alcançando 94,37\% de acurácia na predição de reprovação. As principais fontes de dados mapeadas pelo FICARE foram Ambientes Virtuais de Aprendizagem (AVA), Sistemas de Informações Acadêmicas e Questionários Online. Neves (2024) observou que SVM e Floresta Randômica foram os mais viáveis para a predição da evasão, embora suas métricas fossem inferiores às da reprovação, refletindo a complexidade do fenômeno. A pesquisa destacou a importância de uma cultura de gestão de dados nas IES.
+
+Nesse panorama de investigações sobre a evasão escolar, o presente estudo estabelece uma diferenciação metodológica e contextual crucial, conferindo-lhe uma relevância para o campo da Educação e da Ciência de Dados. Enquanto a maioria das pesquisas correlatas se dedica à evasão no ensino superior, frequentemente abordando-a como um problema de classificação binária (evadido/não evadido) e utilizando dados de contextos institucionais ou de modalidades específicas como a EaD, este trabalho se diferencia ao focar na predição da taxa de evasão a nível institucional no ensino médio brasileiro, e focando também na distribuição municipal por todo o Brasil, o que não foi realizado em outros estudos até o momento. Ressalta-se que o foco foi direcionado mais nos municípios brasileiros pela maior disponibilidade de dados que podem ser correlacionados, como os do IBGE (Instituto Brasileiro de Geografia e Estatística) por exemplo. Tal distinção também é ampliada pela utilização do Censo Escolar da Educação Básica, uma base de dados nacional, que viabiliza uma análise e potencial de generalização em escala municipal e institucional, transcendendo as limitações de estudos de caso isolados. Ao empregar e comparar modelos preditivos como a Regressão Linear e o Multilayer Perceptron (MLP) para uma variável-alvo contínua, o estudo não apenas aprofunda a compreensão das complexas relações que governam a evasão neste nível educacional crítico, mas também gera subsídios concretos e pragmaticamente aplicáveis para a formulação de políticas públicas mais eficazes, capazes de promover um impacto significativo na permanência de milhões de jovens em todo o território nacional.
+
+
+\section{Método}
+
+Para prever a evasão escolar em nível institucional, foi necessário compreender quais variáveis das escolas de ensino básico apresentavam maior correlação com o aumento da taxa de evasão. Dessa forma, a pesquisa foi estruturada em cinco etapas principais: coleta de dados, pré-processamento, definição de variáveis, modelagem e avaliação dos modelos.
+
+Os dados foram coletados do Censo Escolar da Educação Básica de diversos anos, disponibilizado pelo INEP, com foco nas instituições de ensino médio. Também foram utilizados o Nível Socioeconômico (Inse), as Taxas de Transição, também do INEP \#TOFIX-Base de Dados)  e informações municipais do IBGE, integradas por meio de chaves de identificação padronizadas. Essas bases de dados forneceram tanto informações sobre a localidade, estrutura e especificidades das instituições, quanto indicadores diretamente relacionados à evasão escolar. Optou-se por realizar a análise em nível municipal, uma vez que não havia dados individuais dos alunos do ensino médio, apenas informações agregadas por instituição. Essa decisão também se justificou pela maior disponibilidade de dados socioeconômicos dos municípios brasileiros, o que ampliou a abrangência e a consistência da análise.
+
+Na etapa de pré-processamento, os dados foram tratados para garantir consistência e adequação ao uso em algoritmos de aprendizado de máquina. Foram aplicadas técnicas de limpeza para remoção de registros inconsistentes, tratamento de valores ausentes, normalização de variáveis numéricas e codificação de variáveis categóricas, de modo a possibilitar sua utilização em modelos supervisionados. Também foram avaliados possíveis valores extremos (outliers) e, quando necessário, aplicadas técnicas de balanceamento e redução de dimensionalidade para melhorar a capacidade preditiva dos modelos. Em continuidade, foi conduzido um estudo para identificar e definir quais variáveis se relacionavam mais fortemente com a taxa de evasão, tomando como base artigos já publicados e testes exploratórios realizados na própria base. Fatores relacionados ao perfil dos estudantes, como idade, gênero e origem escolar; às características institucionais, como localização geográfica, número de matrículas e infraestrutura; e aos aspectos pedagógicos, como número de docentes, taxa de reprovação e turnos oferecidos, foram considerados por sua relevância comprovada em pesquisas anteriores.
+
+Após a coleta e a limpeza dos dados, foi realizada a etapa de modelagem, na qual foram aplicados diferentes algoritmos de aprendizado de máquina supervisionados, com o objetivo de comparar sua eficiência. Entre os algoritmos selecionados, destacaram-se a \textbf{Regressão Linear Múltipla}, as \textbf{Redes Neurais Artificiais do tipo Multi-Layer Perceptron (MLP)} e a \textbf{Floresta Aleatória (Random Forest – RF)}. Esses modelos foram treinados para devolver uma variável contínua, correspondente à porcentagem prevista da taxa de evasão em cada instituição. O conjunto de dados foi dividido em 80\% para treinamento e 20\% para teste, utilizando-se validação cruzada para garantir maior robustez nos resultados. O ajuste de hiperparâmetros foi realizado por meio de validação cruzada com busca em grade (Grid Search), visando maximizar o desempenho de cada modelo.
+
+A avaliação do desempenho dos modelos foi realizada por meio de métricas normalmente utilizadas em problemas de \textbf{regressão}, tais como o Erro Quadrático Médio da Raiz (RMSE), o Erro Médio Absoluto (MAE) e o Coeficiente de Determinação (R²). Além da comparação entre algoritmos, também foi conduzida uma análise da importância das variáveis em cada modelo, com o intuito de identificar os principais fatores associados à evasão escolar em nível institucional. A interpretabilidade dos resultados foi aprimorada com o uso de técnicas de importância de variáveis, permitindo identificar de forma transparente quais atributos apresentaram maior influência sobre a evasão. Com essas etapas, buscou-se construir um modelo preditivo robusto e interpretável, capaz de auxiliar na formulação de políticas educacionais mais eficazes.
+
+
+
+%====================================================================
+
+\section{Resultados preliminares}
+Após uma etapa de obtenção, tratamento e análise prévia de nossos dados, procedemos ao treinamento de um modelo de regressão linear. A regressão linear é um modelo estatístico fundamental, frequentemente utilizado em aprendizado de máquina supervisionado para prever variáveis contínuas, como a taxa de evasão escolar. Este modelo busca estabelecer uma relação linear entre as variáveis preditoras e a variável-alvo.
+
+Neste estágio inicial do treinamento, o desempenho do modelo foi avaliado e observamos uma acurácia inicial de 4\%. A acurácia, ou $R^2$, mede a taxa geral de acerto do classificador, indicando a proporção de previsões corretas em relação ao total de instâncias analisadas. Um valor tão baixo sugere que o modelo, em sua configuração original, tinha uma capacidade preditiva muito limitada, necessitando de otimizações substanciais.
+
+Diante desse resultado, implementamos uma modificação pontual na forma como agrupávamos e codificávamos algumas de nossas colunas, o que é um aspecto crucial do processamento inicial de dados e da engenharia de atributos. Este processo pode envolver a conversão de dados textuais categóricos em formatos numéricos adequados para os algoritmos, a seleção de atributos mais relevantes ou a redução de dimensionalidade para focar nos fatores que mais influenciam a variável-alvo. A bibliografia destaca que a seleção criteriosa de atributos é fundamental, e técnicas como Correlação de Pearson, algoritmos como Boruta, Wrapper, Relief Feature Selection ou PCA são comumente empregadas para identificar as melhores variáveis para a classificação e predição.
+
+Como resultado dessa reestruturação e agrupamento das variáveis, o $R^2$ do modelo aumentou para 10\%. Embora ainda modesto quando comparado às taxas de sucesso acima de 90\% mencionadas em alguns estudos sobre predição de evasão, esse aumento de 6 pontos percentuais representa uma melhoria considerável na capacidade preditiva do modelo, demonstrando o impacto direto da qualidade e da representação dos dados no desempenho dos algoritmos de aprendizado de máquina. Esse processo iterativo de ajuste e reavaliação é típico do desenvolvimento de modelos, no qual a contínua busca por melhores representações de dados e otimização de algoritmos é vital para alcançar resultados mais robustos e interpretáveis. A capacidade de aprimorar o $R^2$, juntamente com outras métricas como a precisão (que mede o percentual de acertos de verdadeiros positivos dentre todos os exemplos classificados como positivos), é de suma importância para a validação e a aplicação prática do modelo.
+
+
+Após os resutados anteriores, decidimos focar na utilização de uma arquitetura Multilayer Perceptron (MLP), um modelo de rede neural capaz de capturar relações não-lineares e complexas nos dados, para a predição da evasão escolar no nível municipal. A configuração inicial empregou a função de ativação ReLU em todas as camadas, otimizando o modelo para lidar com este fenômeno multifacetado. Inicialmente o modelo foi treinado apenas com os dados de taxa de evasão do INEP. O desempenho preditivo, inerente a problemas de regressão, foi avaliado por meio de métricas específicas, demonstrando uma elevado $R^2$. O Coeficiente de Determinação (R²) atingiu 97,59\%, um valor que sugere que o modelo é capaz de explicar uma proporção considerável da variância na variável-alvo. Adicionalmente, o Erro Médio Absoluto (MAE) foi de 0,40, representando a magnitude média do erro das previsões em unidades absolutas, enquanto o Erro Médio Quadrático (RMSE) registrou 0,70. Tais resultados de alta precisão estão em consonância com a literatura em Mineração de Dados Educacionais (MDE) e Aprendizado de Máquina (AM), que frequentemente reporta modelos com desempenho superior, em muitos casos com $R^2$ acima de 95\% em tarefas de classificação e predição da evasão. Vale salientar que o modelo foi treinado apenas com os dados do Censo Escolar com as taxas de evasão, sem a incorporação de dados socioeconômicos adicionais, o que reforça a robustez e a eficácia do MLP na captura dos padrões subjacentes à evasão escolar.
+
+Adicionalmente, a análise gráfica aprofunda a avaliação do desempenho do modelo MLP. A curva de aprendizagem, figura \ref{fig:grafico_curva_aprendizagem_inse}, evidencia a rápida convergência do modelo, com o erro quadrático médio decrescendo e estabilizando-se em um patamar baixo tanto para os dados de treino quanto para os de validação, indicando uma aprendizagem eficiente e ausência de sobreajuste (overfitting). A qualidade do ajuste é quantificada na tabela de métricas de performance, tabela \ref{tab:modelos_desempenho}, que destaca o excelente Coeficiente de Determinação e os baixos valores para o Erro Médio Absoluto (MAE) e Erro Médio Quadrático (MSE). A análise da distribuição dos erros de previsão (resíduos), visto na figura \ref{fig:grafico_distribuicao_erros_inse}, revela uma distribuição aproximadamente normal e centrada em zero, um indicativo de que os erros são aleatórios e não enviesados sistematicamente. Vale a pena ressaltar que nossa variável alvo é a taxa de evasão total, descrita na tabela original como "tx\_evasao\_total\_EM" (taxa de evasão total do Ensino Médio).
+
+
+\begin{table}[h]
+    \centering
+    \caption{Métricas de Desempenho dos Modelos de Regressão}
+    \label{tab:modelos_desempenho}
+    \begin{tabular}{l c c c c}
+        \toprule
+        \textbf{Algoritmo} & \textbf{MAE} & \textbf{R$^2$} & \textbf{MSE} & \textbf{RMSE} \\
+        \textbf{} & \tiny{(Erro Médio Absoluto)} & \tiny{(Coef. de Determinação)} & \tiny{(Erro Quadrático Médio)} & \tiny{(Raiz do Erro Quadrático Médio)} \\
+        \midrule
+        \textbf{Regressão Linear} & 3,8021 & 0,1073 & 25,1191 & 5,0119 \\
+        \textbf{MLP - Apenas taxa de evasão*} & 0,4059 & 0,9759 & 0,7003 & $\approx$ 0,8368 \\
+        \textbf{MLP - Todos os dados} & 0,5712 & 0,9714 & 2,4147 & $\approx$ 1,5540 \\
+        \textbf{Floresta Aleatória (RF)} & \textbf{0,4396} & \textbf{0,9777} & \textbf{0,4329} & $\approx$ \textbf{0,6580} \\
+        \bottomrule
+    \end{tabular}
+    \vspace{0.5em}
+    \raggedright
+    \footnotesize
+    *Nota: Os valores de RMSE (Raiz do Erro Quadrático Médio) para os modelos MLP e Random Forest foram calculados como a raiz quadrada do MSE (Erro Quadrático Médio) fornecido, a fim de preencher a coluna para comparação.
+\end{table}
+
+Depois do treinamento do modelo MLP com os dados de evasão escolar, foram adicionados os dados do Índice de Nível Socioeconômico (Inse) e os dados do Censo Escolar da Educação Básica, para enriquecer nossa análise e deixar nosso modelo mais robusto em comparação com a regressão linear anterior. A inclusão dessas variáveis resultou em um modelo com desempenho preditivo elevado, conforme evidenciado por um conjunto de métricas e visualizações.
+
+A curva de aprendizagem do novo modelo, figura \ref{fig:grafico_curva_aprendizagem_inse}, demonstra uma convergência estável, com as perdas de treino e validação diminuindo e se estabilizando em valores baixos ao longo das épocas, o que sugere que o modelo aprendeu os padrões dos dados de forma eficaz e generaliza bem para dados não vistos, sem incorrer em sobreajuste. O resultado final dessa aprendizagem é claramente visível no gráfico de valores reais versus preditos, figura \ref{fig:grafico_real_vs_predito_inse}, no qual a dispersão dos pontos se aglutina densamente ao longo da linha de predição perfeita. Esta forte aderência visual indica uma elevada correspondência entre as taxas de evasão reais e as previstas pelo modelo.
+
+Quantitativamente, as métricas de desempenho confirmam essa excelência: o Coeficiente de Determinação ($R^2$) atinge o valor de 0.9714, demonstrado na tabela \ref{tab:modelos_desempenho}, significando que o modelo é capaz de explicar aproximadamente 97,1\% da variabilidade na taxa de evasão. Adicionalmente, o Erro Médio Absoluto (MAE) de 0.5712 indica que, em média, as previsões do modelo desviam-se minimamente dos valores reais. A análise da distribuição dos erros (resíduos), figura \ref{fig:grafico_distribuicao_erros_inse}, complementa esses achados, exibindo um comportamento ideal: uma distribuição normal e simétrica, perfeitamente centrada em zero, o que atesta a ausência de viés sistemático nas previsões do modelo.
+
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=15cm]{taxa_evasao_e_inse/grafico_curva_aprendizagem.png}
+    \caption{Gráfico da curva de aprendizagem do modelo MLP com os dados do Inse}
+    \label{fig:grafico_curva_aprendizagem_inse}
+\end{figure}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=15cm]{taxa_evasao_e_inse/grafico_distribuicao_erros.png}
+    \caption{Gráfico da distribuição de erros do modelo MLP com os dados do Inse}
+    \label{fig:grafico_distribuicao_erros_inse}
+\end{figure}
+
+\begin{figure}[htp]
+    \centering
+    \includegraphics[width=10cm]{taxa_evasao_e_inse/grafico_real_vs_predito.png}
+    \caption{Gráfico dos valores reais contra os valores preditos do modelo MLP com os dados do Inse}
+    \label{fig:grafico_real_vs_predito_inse}
+\end{figure}
+
+A Floresta Aleatória demonstrou desempenho superior em comparação aos demais modelos analisados, apresentando as métricas da tabela \ref{tab:modelos_desempenho}. Esta superioridade pode ser atribuída a três características fundamentais do algoritmo: 
+\begin{itemize}
+    \item Sua capacidade de lidar com não-linearidades complexas através da construção de múltiplas árvores de decisão;
+    \item A robustez contra overfitting proporcionada pelo processo de bagging (Agregação de Bootstrap);
+    \item A seleção aleatória de features em cada nó das árvores, que reduz a correlação entre as árvores individuais.
+\end{itemize}
+Em comparação com a Regressão Linear e o MLP, a Floresta Aleatória apresentou erro médio absoluto significativamente menor e maior capacidade explicativa, evidenciando sua eficácia na modelagem de relações complexas presentes nos dados educacionais analisados.
+
+\newpage
+\newpage
+
+\section{Conclusão}
+Durante o desenvolvimento deste estudo, buscamos entender a complexa relação entre as diversas causas da evasão escolar no ensino médio brasileiro, reconhecendo este fenômeno como multivariado, influenciado por fatores socioeconômicos, institucionais e pessoais. Com isso, o uso do Aprendizado de Máquina (ML) se mostrou mais eficaz do que o uso da estatística convencional, como a Regressão Linear, visto que abordagens tradicionais são limitadas para capturar relações não lineares e interdependentes entre as variáveis.
+
+Essa superioridade foi nitidamente observada nas métricas avaliadas (RMSE, MAE, $R^2$ e MSE). Enquanto a Regressão Linear, mesmo após o pré-processamento de dados, atingiu um Coeficiente de Determinação ($R^2$) de 10,73\%, os modelos não-lineares demonstraram excelente capacidade explicativa: o Multilayer Perceptron (MLP) alcançou um $R^2$ de 97,59\% (apenas taxa de evasão) e a Floresta Aleatória (Random Forest) um $R^2$ de 97,77\%, evidenciando sua eficácia na modelagem de relações complexas. A análise dos erros do modelo MLP também demonstrou um comportamento ideal, com distribuição aproximadamente normal e centrada em zero.
+
+Dessa forma, conseguimos projetar algoritmos robustos (MLP e Floresta Aleatória) que se utilizam de aprendizado de máquina para, ao receber um conjunto de dados sobre o Índice Socioeconômico (Inse) e a infraestrutura das escolas (Censo Escolar), prever a taxa de evasão total de um município. Essa abordagem de focar na predição da taxa de evasão do ensino médio a nível municipal confere uma diferenciação crucial em relação aos trabalhos correlatos, que se dedicam majoritariamente ao ensino superior.
+
+Nossos próximos passos incluem, mas não se limitam a: melhorar a arquitetura dos modelos criados, definir quais são as variáveis mais importantes para as previsões, e concluir a validação dos modelos para uma previsão acurada. Finalmente, o estudo busca analisar de que modo novas políticas públicas poderiam ser criadas para sanar ou mitigar esse problema, além de analisar a eficácia das já existentes, fornecendo subsídios concretos e pragmaticamente aplicáveis para um impacto significativo na permanência de jovens
+
+
+\section*{Documentação}
+\begin{enumerate}
+    \item MENDES, Marcelo Simões. Da inclusão à evasão escolar: o papel da motivação no ensino médio. \textit{Estudos de Psicologia (Campinas)}, v. 35, n. 2, p.  261-265, abr./jun. 2013. \url{https://www.scielo.br/j/estpsi/a/Pg4SnYsQ5gzWFd688gD4c8b/?format=pdf&lang=pt}
+    \item CRELIER, Cristiane. Necessidade de trabalhar e desinteresse são principais motivos para abandono escolar. \textit{Agência de Notícias IBGE}, 15 jul. 2020. Disponível em: \url{https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/28286-necessidade-de-trabalhar-e-desinteresse-sao-principais-motivos-para-abandono-escolar}. Acesso em: 16 ago. 2025.
+    \item VITELLI, R. F., \& Fritsch, R. (2016). Evasão escolar na educação superior: de que indicador estamos falando?. Estudos Em Avaliação Educacional, 27(66), 908–937. \url{https://doi.org/10.18222/eae.v27i66.4009}
+    \item JESUS, J. A. J. \& Gusmão, R. P. G. (2024). Investigação da Evasão Estudantil por meio da Mineração de Dados e Aprendizagem de Máquina: Um Mapeamento Sistemático. Revista Brasileira de Informática na Educação, 32, 807-841. \url{https://doi.org/10.5753/rbie.2024.3466}
+    \item RAMOS, J. L. C. et al. Um estudo comparativo de classificadores na previsão da evasão
+    de alunos em EAD (VII Congresso Brasileiro de Informática na Educação (CBIE 2018)), 2018. \url{http://milanesa.ime.usp.br/rbie/index.php/sbie/article/view/8107}
+    \item ARAÚJO, A. C. P. L. de et al. Determinantes acadêmicos da retenção no Ensino Superior. v. 29, nº 112, p. 1045-1066, 2021. \url{https://doi.org/10.1590/S0104-403620210002902255}
+    \item SILVA, A. R. da; et al. Uma Análise Quantitativa dos Determinantes da Evasão no Ensino Superior EaD. EaD em Foco, v. 15, n. 1, e2322, 2025. doi: \url{https://doi.org/10.18264/eadf.v15i1.2322}
+    \item NEVES, P. T. FICARE: um Framework Inteligente de Coleta e Análise de Dados para mitigar a Reprovação e a Evasão na Educação Superior a Distância. Tese de Doutorado. Universidade Federal de Santa Catarina, 2024. \url{https://repositorio.ufsc.br/handle/123456789/264675}
+    \item PAULA, G. B. de; PICANÇO, F. Desigualdades após o acesso: origem social e evasão do sistema de ensino superior. \textit{Cadernos de Pesquisa}, 2024. \url{https://doi.org/10.1590/ES.281915}
+    
+\end{enumerate}
+
+\end{document}
