@@ -107,9 +107,9 @@ def main():
         print("Gerando Curva ROC para o MLP...")
         mlp_probabilities = model.predict_proba(X_test_scaled)
         visualizer.plot_roc_curve(
-            y_test_int,             # Os labels verdadeiros (0, 1, 2, 3)
+            y_test_int,             # Os labels verdadeiros (0, 1, 2)
             mlp_probabilities,      # As probabilidades
-            model.class_labels,     # A lista [0, 1, 2, 3]
+            model.class_labels,     # A lista [0, 1, 2]
             model_name='MLP'
         )
 
@@ -188,20 +188,20 @@ def main():
         print(importances_df.head(10).to_string())
         
         
-        print("\n=== Análise do Gamma Regressor ===")
-        gamma_reg = GammaRegressorModel()
-        gamma_reg.train(X_train_scaled, y_train, tune=False)
-        gamma_reg_metrics = gamma_reg.evaluate(X_test_scaled, y_test)
+        # print("\n=== Análise do Gamma Regressor ===")
+        # gamma_reg = GammaRegressorModel()
+        # gamma_reg.train(X_train_scaled, y_train, tune=False)
+        # gamma_reg_metrics = gamma_reg.evaluate(X_test_scaled, y_test)
         
-        # --- Plots do Gamma ---
-        gamma_predictions = gamma_reg.predict(X_test_scaled)
-        reg_viz.plot_predictions_vs_real(y_test, gamma_predictions, model_name='Gamma')
-        reg_viz.plot_error_distribution(y_test, gamma_predictions, model_name='Gamma')
-        reg_viz.plot_metrics(gamma_reg_metrics, model_name='Gamma')
+        # # --- Plots do Gamma ---
+        # gamma_predictions = gamma_reg.predict(X_test_scaled)
+        # reg_viz.plot_predictions_vs_real(y_test, gamma_predictions, model_name='Gamma')
+        # reg_viz.plot_error_distribution(y_test, gamma_predictions, model_name='Gamma')
+        # reg_viz.plot_metrics(gamma_reg_metrics, model_name='Gamma')
         
-        print("\n--- 10 Features Mais Importantes (Gamma Regressor) ---")
-        importances_df_gamma = gamma_reg.get_feature_importances(feature_names)
-        print(importances_df_gamma.head(10).to_string())
+        # print("\n--- 10 Features Mais Importantes (Gamma Regressor) ---")
+        # importances_df_gamma = gamma_reg.get_feature_importances(feature_names)
+        # print(importances_df_gamma.head(10).to_string())
 
 if __name__ == "__main__":
     main()

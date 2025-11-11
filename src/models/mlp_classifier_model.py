@@ -23,12 +23,12 @@ class MLPModel:
             Dense(32, activation='selu'),
             BatchNormalization(),
             Dense(16, activation='selu'),
-            Dense(4, activation='softmax') # 4 classes de saída
+            Dense(3, activation='softmax') # 4 classes de saída
         ])
         
         model.compile(
             optimizer='adam',
-            # 1. Loss para classificação de inteiros (0, 1, 2, 3)
+            # 1. Loss para classificação de inteiros (0, 1, 2)
             loss='sparse_categorical_crossentropy', 
             # 2. Métrica de classificação
             metrics=['accuracy']
@@ -39,10 +39,10 @@ class MLPModel:
     def train(self, X_train, y_train, epochs=100, batch_size=32, validation_split=0.1):
         """
         Treina o modelo.
-        IMPORTANTE: y_train deve ser de inteiros (0, 1, 2, 3), não texto.
+        IMPORTANTE: y_train deve ser de inteiros (0, 1, 2), não texto.
         """
         
-        # Armazena as classes (ex: [0, 1, 2, 3])
+        # Armazena as classes (ex: [0, 1, 2])
         self.class_labels = sorted(np.unique(y_train))
         print(f"Treinando classificador MLP para as classes: {self.class_labels}")
 
@@ -67,7 +67,7 @@ class MLPModel:
     def evaluate(self, X_test, y_test):
         """
         Avalia o modelo de classificação e retorna um dicionário de métricas.
-        IMPORTANTE: y_test deve ser de inteiros (0, 1, 2, 3), não texto.
+        IMPORTANTE: y_test deve ser de inteiros (0, 1, 2), não texto.
         """
         
         # 1. Obter 'loss' e 'accuracy' brutos do Keras
@@ -109,7 +109,7 @@ class MLPModel:
         }
 
     def predict(self, X_test):
-        """Retorna as classes preditas (0, 1, 2, 3)."""
+        """Retorna as classes preditas (0, 1, 2)."""
         predictions_proba = self.model.predict(X_test, verbose=0)
         return np.argmax(predictions_proba, axis=1)
     

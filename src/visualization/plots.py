@@ -69,7 +69,7 @@ class ModelVisualizer:
         """
         print("Gerando Matriz de Confusão (Multi-classe) para MLP...")
         
-        # Pega os nomes das classes (ex: [0, 1, 2, 3])
+        # Pega os nomes das classes (ex: [0, 1, 2])
         # e ordena para que a matriz fique consistente
         class_labels = sorted(np.unique(y_test))
         
@@ -173,9 +173,9 @@ class ModelVisualizer:
         Plota as curvas ROC para um problema multi-classe (One-vs-Rest).
         
         Args:
-            y_test: Os labels verdadeiros (ex: [0, 1, 2, 3] ou ['Baixa', 'Alta', ...])
+            y_test: Os labels verdadeiros (ex: [0, 1, 2] ou ['Baixa', 'Alta', ...])
             y_proba: As probabilidades de cada classe (saída do .predict_proba())
-            class_labels: A lista ordenada das classes (ex: [0, 1, 2, 3] ou ['Alta', 'Baixa', ...])
+            class_labels: A lista ordenada das classes (ex: [0, 1, 2] ou ['Alta', 'Baixa', ...])
             model_name: O nome do modelo (ex: "Random Forest")
         """
         print(f"Gerando Curva ROC (One-vs-Rest) para {model_name}...")

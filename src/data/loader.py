@@ -56,7 +56,7 @@ class DataLoader:
         original_len = len(df)
         df = df.dropna(subset=[target])
         print(f"Removidas {original_len - len(df)} linhas por alvo ('{target}') ausente.")
-        y = pd.qcut(df[target], q=4, labels=['Baixa Evasão', 'Média Baixa', 'Média Alta', 'Alta Evasão'])
+        y = pd.qcut(df[target], q=3, labels=['Baixa Evasão', 'Média Evasão', 'Alta Evasão'])
 
         
         # --- 2. Definir Lista de Features (X) ---
@@ -143,11 +143,11 @@ class DataLoader:
         
         # Tratamento de 'y'
         if mode == 'class':
-            print("Criando 4 quartis (grupos) para o alvo...")
+            print("Criando 3 quartis (grupos) para o alvo...")
             y = pd.qcut(
                 df[target], 
-                q=4, 
-                labels=['Baixa Evasão', 'Média Baixa', 'Média Alta', 'Alta Evasão']
+                q=3, 
+                labels=['Baixa Evasão', 'Evasão Média', 'Alta Evasão']
             )
         elif mode == 'reg':
             print("Usando alvo contínuo (Regressão)...")
