@@ -142,10 +142,16 @@ def main():
             model_name='Random Forest'
         )
         
-        print("\n--- 10 Features Mais Importantes (Classificação) ---")
+        print("\n--- Gerando Gráfico de Features (Classificação) ---")
         feature_names = data_inse.feature_names
         importances_df = rf_model.get_feature_importances(feature_names)
         print(importances_df.head(10).to_string())
+        # Chama a nova função de plotagem
+        rf_visualizer.plot_feature_importance(
+            importances_df,
+            model_name='Random_Forest_Classifier'
+        )
+        
 
     ###########################################
     #         3. MODO DE REGRESSÃO            #
@@ -182,11 +188,15 @@ def main():
         reg_viz.plot_error_distribution(y_test, rf_predictions, model_name='Random_Forest')
         reg_viz.plot_metrics(rf_reg_metrics, model_name='Random_Forest')
         
-        print("\n--- 10 Features Mais Importantes (Regressão) ---")
+        print("\n--- Gerando Gráfico de Features (Regressão) ---")
         feature_names = data_inse.feature_names
         importances_df = rf_reg.get_feature_importances(feature_names)
         print(importances_df.head(10).to_string())
-        
+        # Chama a nova função de plotagem
+        reg_viz.plot_feature_importance(
+            importances_df, 
+            model_name='Random_Forest_Regressor'
+        )
         
         # print("\n=== Análise do Gamma Regressor ===")
         # gamma_reg = GammaRegressorModel()

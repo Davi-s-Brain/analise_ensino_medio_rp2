@@ -218,6 +218,55 @@ class ModelVisualizer:
         plt.savefig(filename, bbox_inches='tight')
         print(f"Curva ROC salva em '{filename}'")
         plt.close()
+        
+    def plot_feature_importance(self, importances_df, model_name, top_n=10):
+        """
+        Plota um gráfico de barras horizontal com as features mais importantes.
+        (Versão Corrigida para Seaborn v0.14+)
+        """
+        
+        # 1. Pegar apenas o Top N e inverter a ordem
+        df_top = importances_df.head(top_n)
+        df_top = df_top.iloc[::-1]
+
+        plt.figure(figsize=(12, 8))
+        
+        # --- CORREÇÃO (Seaborn Warning) ---
+        # O Seaborn agora exige que 'hue' seja atribuído para usar 'palette'
+        # para um gradiente na variável 'y'.
+        barplot = sns.barplot(
+            x='importance', 
+            y='feature', 
+            data=df_top, 
+            palette="flare",  # O degradê que você quer
+            hue='feature',      # Atribui a variável y (feature) ao hue
+            legend=False      # Desliga a legenda (que é desnecessária)
+        )
+        # --- FIM DA CORREÇÃO ---
+        
+        plt.title(f'Top {top_n} Features Mais Importantes - {model_name}')
+        plt.xlabel('Importância Relativa')
+        plt.ylabel('Feature')
+        
+        # Adiciona os valores nas barras
+        for p in barplot.patches:
+            width = p.get_width()
+            plt.text(
+                width * 1.005, # Posição X (um pouco depois da barra)
+                p.get_y() + p.get_height() / 2, # Posição Y (meio da barra)
+                f'{width:.5f}', # O texto (formatado)
+                va='center'
+            )
+            
+        filename = f'grafico_feature_importance_{model_name.lower().replace(" ", "_")}.png'
+        
+        # Ajusta o layout para não cortar os nomes
+        plt.tight_layout() 
+        
+        plt.savefig(filename)
+        print(f"Gráfico de Feature Importance salvo em '{filename}'")
+        plt.close()
+
 
     def __init__(self):
         sns.set_style("whitegrid")

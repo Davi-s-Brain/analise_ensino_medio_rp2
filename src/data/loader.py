@@ -71,7 +71,7 @@ class DataLoader:
             # INSE
             'MEDIA_INSE', 'PC_NIVEL_1', 'PC_NIVEL_2', 'PC_NIVEL_3', 'PC_NIVEL_4', 'PC_NIVEL_5', 'PC_NIVEL_6', 'PC_NIVEL_7',
 
-            # Microdados
+            # Microdadosw
             'QT_DOC_MED_mean', 'QT_DOC_MED_std', 'QT_DOC_MED_min', 'QT_DOC_MED_max', 'QT_SALAS_EXISTENTES_mean', 'QT_SALAS_EXISTENTES_std', 'QT_SALAS_EXISTENTES_min', 'QT_SALAS_EXISTENTES_max', 'QT_FUNCIONARIOS_mean', 'QT_FUNCIONARIOS_std', 'QT_FUNCIONARIOS_min', 'QT_FUNCIONARIOS_max', 'IN_PREDIO_COMPARTILHADO_mean', 'IN_AGUA_INEXISTENTE_mean', 'IN_ENERGIA_INEXISTENTE_mean', 'IN_ESGOTO_INEXISTENTE_mean', 'IN_BIBLIOTECA_mean', 'IN_LABORATORIO_INFORMATICA_mean', 'IN_QUADRA_ESPORTES_mean', 'IN_REFEITORIO_mean', 'IN_INTERNET_mean', 'IN_INTERNET_ALUNOS_mean', 'IN_BANDA_LARGA_mean', 'IN_PROF_PSICOLOGO_mean', 'IN_PROF_ASSIST_SOCIAL_mean', 'IN_EXAME_SELECAO_mean', 'IN_ORGAO_GREMIO_ESTUDANTIL_mean', 'IN_FINAL_SEMANA_mean', 'QT_MAT_MED_sum', 'QT_MAT_MED_INT_sum',
             
             # Adequação da formação docente (AFD)
