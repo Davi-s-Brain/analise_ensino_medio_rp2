@@ -9,6 +9,7 @@ from src.models.random_forest_regressor import RandomForestRegressorModel
 from src.models.mlp_classifier_model import MLPModel as MLPClassifierModel
 from src.visualization.plots import ModelVisualizer as ClassifierVisualizer
 from src.models.random_forest_model import RandomForestModel as RandomForestClassifierModel
+from src.models.linear_regressor import LinearRegressorModel
 
 
 def main():
@@ -158,45 +159,61 @@ def main():
     ###########################################
     
     elif MODE == 'reg':
+        feature_names = data_inse.feature_names
         
         # --- CORREÇÃO DE INSTÂNCIA: RegressorVisualizer ---
         reg_viz = RegressorVisualizer()
         # O visualizer do classificador (para a curva de aprendizado do MLP)
         class_viz = ClassifierVisualizer()
         
-        print("\n=== Análise do Modelo MLP (Regressão) ===")
-        mlp_reg = MLPRegressorModel(input_dim=X_train_scaled.shape[1])
-        mlp_history = mlp_reg.train(X_train_scaled, y_train)
-        mlp_reg_metrics = mlp_reg.evaluate(X_test_scaled, y_test)
+        # print("\n=== Análise do Modelo MLP (Regressão) ===")
+        # mlp_reg = MLPRegressorModel(input_dim=X_train_scaled.shape[1])
+        # mlp_history = mlp_reg.train(X_train_scaled, y_train)
+        # mlp_reg_metrics = mlp_reg.evaluate(X_test_scaled, y_test)
 
-        # --- Plots do MLP ---
-        mlp_predictions = mlp_reg.predict(X_test_scaled)
-        class_viz.plot_learning_curve(mlp_history)
-        reg_viz.plot_predictions_vs_real(y_test, mlp_predictions, model_name='MLP')
-        reg_viz.plot_error_distribution(y_test, mlp_predictions, model_name='MLP')
-        reg_viz.plot_metrics(mlp_reg_metrics, model_name='MLP')
+        # # --- Plots do MLP ---
+        # mlp_predictions = mlp_reg.predict(X_test_scaled)
+        # class_viz.plot_learning_curve(mlp_history)
+        # reg_viz.plot_predictions_vs_real(y_test, mlp_predictions, model_name='MLP')
+        # reg_viz.plot_error_distribution(y_test, mlp_predictions, model_name='MLP')
+        # reg_viz.plot_metrics(mlp_reg_metrics, model_name='MLP')
         
 
-        print("\n=== Análise do Random Forest (Regressão) ===")
-        rf_reg = RandomForestRegressorModel()
-        rf_reg.train(X_train_scaled, y_train, tune=False) 
-        rf_reg_metrics = rf_reg.evaluate(X_test_scaled, y_test)
+        # print("\n=== Análise do Random Forest (Regressão) ===")
+        # rf_reg = RandomForestRegressorModel()
+        # rf_reg.train(X_train_scaled, y_train, tune=False) 
+        # rf_reg_metrics = rf_reg.evaluate(X_test_scaled, y_test)
         
-        # --- Plots do RF ---
-        rf_predictions = rf_reg.predict(X_test_scaled)
-        reg_viz.plot_predictions_vs_real(y_test, rf_predictions, model_name='Random_Forest')
-        reg_viz.plot_error_distribution(y_test, rf_predictions, model_name='Random_Forest')
-        reg_viz.plot_metrics(rf_reg_metrics, model_name='Random_Forest')
+        # # --- Plots do RF ---
+        # rf_predictions = rf_reg.predict(X_test_scaled)
+        # reg_viz.plot_predictions_vs_real(y_test, rf_predictions, model_name='Random_Forest')
+        # reg_viz.plot_error_distribution(y_test, rf_predictions, model_name='Random_Forest')
+        # reg_viz.plot_metrics(rf_reg_metrics, model_name='Random_Forest')
         
-        print("\n--- Gerando Gráfico de Features (Regressão) ---")
-        feature_names = data_inse.feature_names
-        importances_df = rf_reg.get_feature_importances(feature_names)
-        print(importances_df.head(10).to_string())
-        # Chama a nova função de plotagem
-        reg_viz.plot_feature_importance(
-            importances_df, 
-            model_name='Random_Forest_Regressor'
-        )
+        # print("\n--- Gerando Gráfico de Features (Regressão) ---")
+        # feature_names = data_inse.feature_names
+        # importances_df = rf_reg.get_feature_importances(feature_names)
+        # print(importances_df.head(10).to_string())
+        # # Chama a nova função de plotagem
+        # reg_viz.plot_feature_importance(
+        #     importances_df, 
+        #     model_name='Random_Forest_Regressor'
+        # )
+        
+        print("\n=== Análise do Linear Regressor (Baseline) ===")
+        lin_reg = LinearRegressorModel()
+        lin_reg.train(X_train_scaled, y_train)
+        lin_reg_metrics = lin_reg.evaluate(X_test_scaled, y_test)
+        
+        # --- Plots do Linear ---
+        lin_predictions = lin_reg.predict(X_test_scaled)
+        reg_viz.plot_predictions_vs_real(y_test, lin_predictions, model_name='Linear')
+        reg_viz.plot_error_distribution(y_test, lin_predictions, model_name='Linear')
+        reg_viz.plot_metrics(lin_reg_metrics, model_name='Linear')
+        
+        print("\n--- Gerando Gráfico de Features (Linear Regressor) ---")
+        importances_df_linear = lin_reg.get_feature_importances(feature_names)
+        reg_viz.plot_feature_importance(importances_df_linear, model_name='Linear_Regressor')
         
         # print("\n=== Análise do Gamma Regressor ===")
         # gamma_reg = GammaRegressorModel()
