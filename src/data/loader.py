@@ -66,7 +66,7 @@ class DataLoader:
             'NO_REGIAO', 'NO_UF',
             
             # Taxa de aprovação e repetência
-            # 'tx_promocao_EM','tx_repetencia_EM',
+            'tx_promocao_EM','tx_repetencia_EM',
             
             # INSE
             'MEDIA_INSE', 'PC_NIVEL_1', 'PC_NIVEL_2', 'PC_NIVEL_3', 'PC_NIVEL_4', 'PC_NIVEL_5', 'PC_NIVEL_6', 'PC_NIVEL_7',
